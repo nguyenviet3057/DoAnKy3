@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="QLNS" Class="ModelClassDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Table Name="dbo.CONTRACT" Member="CONTRACTs">
+    <Type Name="CONTRACT">
+      <Column Name="CONTR_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CONTR_SIGN_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="CONTR_END_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="CONTR_SAL_BASE" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DEGREE" Member="DEGREEs">
+    <Type Name="DEGREE">
+      <Column Name="DEG_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DEG_NAME" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="DEG_DESC" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DEGREE_CONFIRM" Member="DEGREE_CONFIRMs">
+    <Type Name="DEGREE_CONFIRM">
+      <Column Name="DEG_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DEPARTMENT" Member="DEPARTMENTs">
+    <Type Name="DEPARTMENT">
+      <Column Name="DEPT_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DEPT_NAME" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="DEPT_ADDRESS" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="DEPT_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.EMPLOYEE" Member="EMPLOYEEs">
+    <Type Name="EMPLOYEE">
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="EMP_NAME" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_GENDER" Type="System.String" DbType="NVarChar(3) NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_DOB" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_ADDRESS" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_ID" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_PLACE_OG" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="EMP_PHONE" Type="System.String" DbType="VarChar(10)" CanBeNull="true" />
+      <Column Name="EMP_EMAIL" Type="System.String" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_REL" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="EMP_NAT" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_POS" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="DEPT_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.EVALUATION" Member="EVALUATIONs">
+    <Type Name="EVALUATION">
+      <Column Name="EVAL_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="EVAL_HRDWRK" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EVAL_FRDLY" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EVAL_CRTV" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EVAL_CMT" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FEEDBACK" Member="FEEDBACKs">
+    <Type Name="FEEDBACK">
+      <Column Name="FDBK_NUM" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="FDBK_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="FDBK_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="FDBK_SCALE" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.NOTIFICATIONS" Member="NOTIFICATIONs">
+    <Type Name="NOTIFICATION">
+      <Column Name="NOTIF_NUM" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NOTIF_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="NOTIF_DETAIL" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PROJECT" Member="PROJECTs">
+    <Type Name="PROJECT">
+      <Column Name="PROJ_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PROJ_NAME" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="PROJ_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PROJECT_TASK" Member="PROJECT_TASKs">
+    <Type Name="PROJECT_TASK">
+      <Column Name="PROJTSK_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PROJTSK_PROG" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="PROJTSK_DOC" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="PROJTSK_IMG" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="PROJTSK_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Column Name="PROJ_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SALARY" Member="SALARies">
+    <Type Name="SALARY">
+      <Column Name="CONTR_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SAL_DATE" Type="System.DateTime" DbType="Date NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="SAL_INC" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="SAL_BONUS" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="SAL_ALLW" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TIME_KEEP" Member="TIME_KEEPs">
+    <Type Name="TIME_KEEP">
+      <Column Name="TIME_CODE" Type="System.String" DbType="VarChar(20) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="TIME_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="TIME_CLK_IN" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+      <Column Name="TIME_CLK_OUT" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
+      <Column Name="TIME_ABST" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.USERS" Member="USERs">
+    <Type Name="USER">
+      <Column Name="USER_ID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="USER_PSWD" Type="System.String" DbType="VarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="USER_STATE" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="TOKEN" Type="System.String" DbType="VarChar(80)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

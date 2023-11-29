@@ -1,0 +1,77 @@
+﻿using DoAnKy3.Models;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace DoAnKy3.Controllers
+{
+    public class LoginController : BaseController
+    {
+        // GET: Login
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Login()
+        {
+            var response = new ResponseModel();
+
+            try
+            {
+                int userId = int.Parse(Request["userid"]);
+                string password = Request["password"];
+                var result = db.USERs.Where(o => o.USER_ID == userId && o.USER_PSWD == password).FirstOrDefault();
+                if (result == null)
+                {
+                    response.status = ResponseModel.StatusCode.NotFound;
+                    response.message = "Account not found!";
+                    return Json(response);
+                }
+
+                dynamic data = new ExpandoObject();
+                data.token = ComputeSha256Hash(userId.ToString() + password);
+                var obj = (IDictionary<string, object>)data;
+
+                response.status = ResponseModel.StatusCode.Success;
+                response.message = "Login success!";
+                response.data = JsonConvert.SerializeObject(obj);
+
+                result.TOKEN = data.token;
+                db.SubmitChanges();
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                response.status = ResponseModel.StatusCode.Error;
+                //response.message = "Login failed!";
+                response.message = ex.Message;
+                return Json(response);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Validate()
+        {
+            string token = Request["access_token"];
+            var result = db.USERs.Where(o => o.TOKEN == token).FirstOrDefault();
+            var response = new ResponseModel();
+            if (result == null)
+            {
+                response.status = ResponseModel.StatusCode.NotFound;
+                response.message = "Token not found!";
+                return Json(response);
+            }
+
+            response.status = ResponseModel.StatusCode.Success;
+            response.message = "Auto login success!";
+            return Json(response);
+        }
+    }
+}
