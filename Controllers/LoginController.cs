@@ -35,14 +35,14 @@ namespace DoAnKy3.Controllers
                 }
 
                 dynamic data = new ExpandoObject();
-                data.token = ComputeSha256Hash(userId.ToString() + password);
+                data.token = ComputeSha256Hash(userId.ToString() + password + DateTime.Now.Subtract(new DateTime(1970,1,1)).TotalSeconds);
                 var obj = (IDictionary<string, object>)data;
 
                 response.status = ResponseModel.StatusCode.Success;
                 response.message = "Login success!";
                 response.data = JsonConvert.SerializeObject(obj);
 
-                result.TOKEN = data.token;
+                result.USER_TOKEN = data.token;
                 db.SubmitChanges();
 
                 return Json(response);
@@ -60,7 +60,7 @@ namespace DoAnKy3.Controllers
         public ActionResult Validate()
         {
             string token = Request["access_token"];
-            var result = db.USERs.Where(o => o.TOKEN == token).FirstOrDefault();
+            var result = db.USERs.Where(o => o.USER_TOKEN == token).FirstOrDefault();
             var response = new ResponseModel();
             if (result == null)
             {

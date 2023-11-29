@@ -33,6 +33,9 @@ namespace DoAnKy3.Models
     partial void InsertCONTRACT(CONTRACT instance);
     partial void UpdateCONTRACT(CONTRACT instance);
     partial void DeleteCONTRACT(CONTRACT instance);
+    partial void InsertUSER(USER instance);
+    partial void UpdateUSER(USER instance);
+    partial void DeleteUSER(USER instance);
     partial void InsertDEGREE(DEGREE instance);
     partial void UpdateDEGREE(DEGREE instance);
     partial void DeleteDEGREE(DEGREE instance);
@@ -66,10 +69,8 @@ namespace DoAnKy3.Models
     partial void InsertTIME_KEEP(TIME_KEEP instance);
     partial void UpdateTIME_KEEP(TIME_KEEP instance);
     partial void DeleteTIME_KEEP(TIME_KEEP instance);
-    partial void InsertUSER(USER instance);
-    partial void UpdateUSER(USER instance);
-    partial void DeleteUSER(USER instance);
         #endregion
+
         public ModelClassDataContext() :
 				base(ConfigurationManager.ConnectionStrings["QLNSConnectionString"].ConnectionString, mappingSource)
         {
@@ -105,6 +106,14 @@ namespace DoAnKy3.Models
 			get
 			{
 				return this.GetTable<CONTRACT>();
+			}
+		}
+		
+		public System.Data.Linq.Table<USER> USERs
+		{
+			get
+			{
+				return this.GetTable<USER>();
 			}
 		}
 		
@@ -195,14 +204,6 @@ namespace DoAnKy3.Models
 				return this.GetTable<TIME_KEEP>();
 			}
 		}
-		
-		public System.Data.Linq.Table<USER> USERs
-		{
-			get
-			{
-				return this.GetTable<USER>();
-			}
-		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.CONTRACT")]
@@ -220,6 +221,10 @@ namespace DoAnKy3.Models
 		private System.DateTime _CONTR_END_DATE;
 		
 		private System.Nullable<decimal> _CONTR_SAL_BASE;
+		
+		private EntitySet<SALARY> _SALARies;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -239,6 +244,8 @@ namespace DoAnKy3.Models
 		
 		public CONTRACT()
 		{
+			this._SALARies = new EntitySet<SALARY>(new Action<SALARY>(this.attach_SALARies), new Action<SALARY>(this.detach_SALARies));
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
 			OnCreated();
 		}
 		
@@ -273,6 +280,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EMP_NUM != value))
 				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEMP_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EMP_NUM = value;
@@ -342,6 +353,240 @@ namespace DoAnKy3.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CONTRACT_SALARY", Storage="_SALARies", ThisKey="CONTR_NUM", OtherKey="CONTR_NUM")]
+		public EntitySet<SALARY> SALARies
+		{
+			get
+			{
+				return this._SALARies;
+			}
+			set
+			{
+				this._SALARies.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_CONTRACT", Storage="_EMPLOYEE", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.CONTRACTs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.CONTRACTs.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_SALARies(SALARY entity)
+		{
+			this.SendPropertyChanging();
+			entity.CONTRACT = this;
+		}
+		
+		private void detach_SALARies(SALARY entity)
+		{
+			this.SendPropertyChanging();
+			entity.CONTRACT = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.USERS")]
+	public partial class USER : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _USER_ID;
+		
+		private string _USER_PSWD;
+		
+		private string _USER_TOKEN;
+		
+		private bool _USER_STATE;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnUSER_IDChanging(int value);
+    partial void OnUSER_IDChanged();
+    partial void OnUSER_PSWDChanging(string value);
+    partial void OnUSER_PSWDChanged();
+    partial void OnUSER_TOKENChanging(string value);
+    partial void OnUSER_TOKENChanged();
+    partial void OnUSER_STATEChanging(bool value);
+    partial void OnUSER_STATEChanged();
+    #endregion
+		
+		public USER()
+		{
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USER_ID", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		public int USER_ID
+		{
+			get
+			{
+				return this._USER_ID;
+			}
+			set
+			{
+				if ((this._USER_ID != value))
+				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUSER_IDChanging(value);
+					this.SendPropertyChanging();
+					this._USER_ID = value;
+					this.SendPropertyChanged("USER_ID");
+					this.OnUSER_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USER_PSWD", DbType="VarChar(256) NOT NULL", CanBeNull=false)]
+		public string USER_PSWD
+		{
+			get
+			{
+				return this._USER_PSWD;
+			}
+			set
+			{
+				if ((this._USER_PSWD != value))
+				{
+					this.OnUSER_PSWDChanging(value);
+					this.SendPropertyChanging();
+					this._USER_PSWD = value;
+					this.SendPropertyChanged("USER_PSWD");
+					this.OnUSER_PSWDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USER_TOKEN", DbType="VarChar(256)")]
+		public string USER_TOKEN
+		{
+			get
+			{
+				return this._USER_TOKEN;
+			}
+			set
+			{
+				if ((this._USER_TOKEN != value))
+				{
+					this.OnUSER_TOKENChanging(value);
+					this.SendPropertyChanging();
+					this._USER_TOKEN = value;
+					this.SendPropertyChanged("USER_TOKEN");
+					this.OnUSER_TOKENChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USER_STATE", DbType="Bit NOT NULL")]
+		public bool USER_STATE
+		{
+			get
+			{
+				return this._USER_STATE;
+			}
+			set
+			{
+				if ((this._USER_STATE != value))
+				{
+					this.OnUSER_STATEChanging(value);
+					this.SendPropertyChanging();
+					this._USER_STATE = value;
+					this.SendPropertyChanged("USER_STATE");
+					this.OnUSER_STATEChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_USER", Storage="_EMPLOYEE", ThisKey="USER_ID", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.USER = null;
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.USER = this;
+						this._USER_ID = value.EMP_NUM;
+					}
+					else
+					{
+						this._USER_ID = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -375,6 +620,8 @@ namespace DoAnKy3.Models
 		
 		private string _DEG_DESC;
 		
+		private EntitySet<DEGREE_CONFIRM> _DEGREE_CONFIRMs;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -389,6 +636,7 @@ namespace DoAnKy3.Models
 		
 		public DEGREE()
 		{
+			this._DEGREE_CONFIRMs = new EntitySet<DEGREE_CONFIRM>(new Action<DEGREE_CONFIRM>(this.attach_DEGREE_CONFIRMs), new Action<DEGREE_CONFIRM>(this.detach_DEGREE_CONFIRMs));
 			OnCreated();
 		}
 		
@@ -452,6 +700,19 @@ namespace DoAnKy3.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DEGREE_DEGREE_CONFIRM", Storage="_DEGREE_CONFIRMs", ThisKey="DEG_CODE", OtherKey="DEG_CODE")]
+		public EntitySet<DEGREE_CONFIRM> DEGREE_CONFIRMs
+		{
+			get
+			{
+				return this._DEGREE_CONFIRMs;
+			}
+			set
+			{
+				this._DEGREE_CONFIRMs.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -471,6 +732,18 @@ namespace DoAnKy3.Models
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void attach_DEGREE_CONFIRMs(DEGREE_CONFIRM entity)
+		{
+			this.SendPropertyChanging();
+			entity.DEGREE = this;
+		}
+		
+		private void detach_DEGREE_CONFIRMs(DEGREE_CONFIRM entity)
+		{
+			this.SendPropertyChanging();
+			entity.DEGREE = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.DEGREE_CONFIRM")]
@@ -482,6 +755,10 @@ namespace DoAnKy3.Models
 		private string _DEG_CODE;
 		
 		private int _EMP_NUM;
+		
+		private EntityRef<DEGREE> _DEGREE;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -495,6 +772,8 @@ namespace DoAnKy3.Models
 		
 		public DEGREE_CONFIRM()
 		{
+			this._DEGREE = default(EntityRef<DEGREE>);
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
 			OnCreated();
 		}
 		
@@ -509,6 +788,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._DEG_CODE != value))
 				{
+					if (this._DEGREE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnDEG_CODEChanging(value);
 					this.SendPropertyChanging();
 					this._DEG_CODE = value;
@@ -529,11 +812,83 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EMP_NUM != value))
 				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEMP_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EMP_NUM = value;
 					this.SendPropertyChanged("EMP_NUM");
 					this.OnEMP_NUMChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DEGREE_DEGREE_CONFIRM", Storage="_DEGREE", ThisKey="DEG_CODE", OtherKey="DEG_CODE", IsForeignKey=true)]
+		public DEGREE DEGREE
+		{
+			get
+			{
+				return this._DEGREE.Entity;
+			}
+			set
+			{
+				DEGREE previousValue = this._DEGREE.Entity;
+				if (((previousValue != value) 
+							|| (this._DEGREE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._DEGREE.Entity = null;
+						previousValue.DEGREE_CONFIRMs.Remove(this);
+					}
+					this._DEGREE.Entity = value;
+					if ((value != null))
+					{
+						value.DEGREE_CONFIRMs.Add(this);
+						this._DEG_CODE = value.DEG_CODE;
+					}
+					else
+					{
+						this._DEG_CODE = default(string);
+					}
+					this.SendPropertyChanged("DEGREE");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_DEGREE_CONFIRM", Storage="_EMPLOYEE", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.DEGREE_CONFIRMs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.DEGREE_CONFIRMs.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
 				}
 			}
 		}
@@ -575,6 +930,10 @@ namespace DoAnKy3.Models
 		
 		private string _DEPT_DESC;
 		
+		private EntitySet<EMPLOYEE> _EMPLOYEEs;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -593,6 +952,8 @@ namespace DoAnKy3.Models
 		
 		public DEPARTMENT()
 		{
+			this._EMPLOYEEs = new EntitySet<EMPLOYEE>(new Action<EMPLOYEE>(this.attach_EMPLOYEEs), new Action<EMPLOYEE>(this.detach_EMPLOYEEs));
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
 			OnCreated();
 		}
 		
@@ -647,6 +1008,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EMP_NUM != value))
 				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEMP_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EMP_NUM = value;
@@ -696,6 +1061,53 @@ namespace DoAnKy3.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DEPARTMENT_EMPLOYEE", Storage="_EMPLOYEEs", ThisKey="DEPT_CODE", OtherKey="DEPT_CODE")]
+		public EntitySet<EMPLOYEE> EMPLOYEEs
+		{
+			get
+			{
+				return this._EMPLOYEEs;
+			}
+			set
+			{
+				this._EMPLOYEEs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_DEPARTMENT", Storage="_EMPLOYEE", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.DEPARTMENTs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.DEPARTMENTs.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -714,6 +1126,18 @@ namespace DoAnKy3.Models
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_EMPLOYEEs(EMPLOYEE entity)
+		{
+			this.SendPropertyChanging();
+			entity.DEPARTMENT = this;
+		}
+		
+		private void detach_EMPLOYEEs(EMPLOYEE entity)
+		{
+			this.SendPropertyChanging();
+			entity.DEPARTMENT = null;
 		}
 	}
 	
@@ -749,6 +1173,30 @@ namespace DoAnKy3.Models
 		
 		private string _DEPT_CODE;
 		
+		private EntitySet<CONTRACT> _CONTRACTs;
+		
+		private EntityRef<USER> _USER;
+		
+		private EntitySet<DEGREE_CONFIRM> _DEGREE_CONFIRMs;
+		
+		private EntitySet<DEPARTMENT> _DEPARTMENTs;
+		
+		private EntitySet<EVALUATION> _EVALUATIONs;
+		
+		private EntitySet<EVALUATION> _EVALUATIONs1;
+		
+		private EntitySet<FEEDBACK> _FEEDBACKs;
+		
+		private EntitySet<NOTIFICATION> _NOTIFICATIONs;
+		
+		private EntitySet<PROJECT> _PROJECTs;
+		
+		private EntitySet<PROJECT_TASK> _PROJECT_TASKs;
+		
+		private EntitySet<TIME_KEEP> _TIME_KEEPs;
+		
+		private EntityRef<DEPARTMENT> _DEPARTMENT;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -783,6 +1231,18 @@ namespace DoAnKy3.Models
 		
 		public EMPLOYEE()
 		{
+			this._CONTRACTs = new EntitySet<CONTRACT>(new Action<CONTRACT>(this.attach_CONTRACTs), new Action<CONTRACT>(this.detach_CONTRACTs));
+			this._USER = default(EntityRef<USER>);
+			this._DEGREE_CONFIRMs = new EntitySet<DEGREE_CONFIRM>(new Action<DEGREE_CONFIRM>(this.attach_DEGREE_CONFIRMs), new Action<DEGREE_CONFIRM>(this.detach_DEGREE_CONFIRMs));
+			this._DEPARTMENTs = new EntitySet<DEPARTMENT>(new Action<DEPARTMENT>(this.attach_DEPARTMENTs), new Action<DEPARTMENT>(this.detach_DEPARTMENTs));
+			this._EVALUATIONs = new EntitySet<EVALUATION>(new Action<EVALUATION>(this.attach_EVALUATIONs), new Action<EVALUATION>(this.detach_EVALUATIONs));
+			this._EVALUATIONs1 = new EntitySet<EVALUATION>(new Action<EVALUATION>(this.attach_EVALUATIONs1), new Action<EVALUATION>(this.detach_EVALUATIONs1));
+			this._FEEDBACKs = new EntitySet<FEEDBACK>(new Action<FEEDBACK>(this.attach_FEEDBACKs), new Action<FEEDBACK>(this.detach_FEEDBACKs));
+			this._NOTIFICATIONs = new EntitySet<NOTIFICATION>(new Action<NOTIFICATION>(this.attach_NOTIFICATIONs), new Action<NOTIFICATION>(this.detach_NOTIFICATIONs));
+			this._PROJECTs = new EntitySet<PROJECT>(new Action<PROJECT>(this.attach_PROJECTs), new Action<PROJECT>(this.detach_PROJECTs));
+			this._PROJECT_TASKs = new EntitySet<PROJECT_TASK>(new Action<PROJECT_TASK>(this.attach_PROJECT_TASKs), new Action<PROJECT_TASK>(this.detach_PROJECT_TASKs));
+			this._TIME_KEEPs = new EntitySet<TIME_KEEP>(new Action<TIME_KEEP>(this.attach_TIME_KEEPs), new Action<TIME_KEEP>(this.detach_TIME_KEEPs));
+			this._DEPARTMENT = default(EntityRef<DEPARTMENT>);
 			OnCreated();
 		}
 		
@@ -1037,11 +1497,208 @@ namespace DoAnKy3.Models
 			{
 				if ((this._DEPT_CODE != value))
 				{
+					if (this._DEPARTMENT.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnDEPT_CODEChanging(value);
 					this.SendPropertyChanging();
 					this._DEPT_CODE = value;
 					this.SendPropertyChanged("DEPT_CODE");
 					this.OnDEPT_CODEChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_CONTRACT", Storage="_CONTRACTs", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<CONTRACT> CONTRACTs
+		{
+			get
+			{
+				return this._CONTRACTs;
+			}
+			set
+			{
+				this._CONTRACTs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_USER", Storage="_USER", ThisKey="EMP_NUM", OtherKey="USER_ID", IsUnique=true, IsForeignKey=false)]
+		public USER USER
+		{
+			get
+			{
+				return this._USER.Entity;
+			}
+			set
+			{
+				USER previousValue = this._USER.Entity;
+				if (((previousValue != value) 
+							|| (this._USER.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._USER.Entity = null;
+						previousValue.EMPLOYEE = null;
+					}
+					this._USER.Entity = value;
+					if ((value != null))
+					{
+						value.EMPLOYEE = this;
+					}
+					this.SendPropertyChanged("USER");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_DEGREE_CONFIRM", Storage="_DEGREE_CONFIRMs", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<DEGREE_CONFIRM> DEGREE_CONFIRMs
+		{
+			get
+			{
+				return this._DEGREE_CONFIRMs;
+			}
+			set
+			{
+				this._DEGREE_CONFIRMs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_DEPARTMENT", Storage="_DEPARTMENTs", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<DEPARTMENT> DEPARTMENTs
+		{
+			get
+			{
+				return this._DEPARTMENTs;
+			}
+			set
+			{
+				this._DEPARTMENTs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_EVALUATION", Storage="_EVALUATIONs", ThisKey="EMP_NUM", OtherKey="EVAL_NUM")]
+		public EntitySet<EVALUATION> EVALUATIONs
+		{
+			get
+			{
+				return this._EVALUATIONs;
+			}
+			set
+			{
+				this._EVALUATIONs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_EVALUATION1", Storage="_EVALUATIONs1", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<EVALUATION> EVALUATIONs1
+		{
+			get
+			{
+				return this._EVALUATIONs1;
+			}
+			set
+			{
+				this._EVALUATIONs1.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_FEEDBACK", Storage="_FEEDBACKs", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<FEEDBACK> FEEDBACKs
+		{
+			get
+			{
+				return this._FEEDBACKs;
+			}
+			set
+			{
+				this._FEEDBACKs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_NOTIFICATION", Storage="_NOTIFICATIONs", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<NOTIFICATION> NOTIFICATIONs
+		{
+			get
+			{
+				return this._NOTIFICATIONs;
+			}
+			set
+			{
+				this._NOTIFICATIONs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_PROJECT", Storage="_PROJECTs", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<PROJECT> PROJECTs
+		{
+			get
+			{
+				return this._PROJECTs;
+			}
+			set
+			{
+				this._PROJECTs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_PROJECT_TASK", Storage="_PROJECT_TASKs", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<PROJECT_TASK> PROJECT_TASKs
+		{
+			get
+			{
+				return this._PROJECT_TASKs;
+			}
+			set
+			{
+				this._PROJECT_TASKs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_TIME_KEEP", Storage="_TIME_KEEPs", ThisKey="EMP_NUM", OtherKey="EMP_NUM")]
+		public EntitySet<TIME_KEEP> TIME_KEEPs
+		{
+			get
+			{
+				return this._TIME_KEEPs;
+			}
+			set
+			{
+				this._TIME_KEEPs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="DEPARTMENT_EMPLOYEE", Storage="_DEPARTMENT", ThisKey="DEPT_CODE", OtherKey="DEPT_CODE", IsForeignKey=true)]
+		public DEPARTMENT DEPARTMENT
+		{
+			get
+			{
+				return this._DEPARTMENT.Entity;
+			}
+			set
+			{
+				DEPARTMENT previousValue = this._DEPARTMENT.Entity;
+				if (((previousValue != value) 
+							|| (this._DEPARTMENT.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._DEPARTMENT.Entity = null;
+						previousValue.EMPLOYEEs.Remove(this);
+					}
+					this._DEPARTMENT.Entity = value;
+					if ((value != null))
+					{
+						value.EMPLOYEEs.Add(this);
+						this._DEPT_CODE = value.DEPT_CODE;
+					}
+					else
+					{
+						this._DEPT_CODE = default(string);
+					}
+					this.SendPropertyChanged("DEPARTMENT");
 				}
 			}
 		}
@@ -1065,6 +1722,126 @@ namespace DoAnKy3.Models
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void attach_CONTRACTs(CONTRACT entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_CONTRACTs(CONTRACT entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
+		
+		private void attach_DEGREE_CONFIRMs(DEGREE_CONFIRM entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_DEGREE_CONFIRMs(DEGREE_CONFIRM entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
+		
+		private void attach_DEPARTMENTs(DEPARTMENT entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_DEPARTMENTs(DEPARTMENT entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
+		
+		private void attach_EVALUATIONs(EVALUATION entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_EVALUATIONs(EVALUATION entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
+		
+		private void attach_EVALUATIONs1(EVALUATION entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE1 = this;
+		}
+		
+		private void detach_EVALUATIONs1(EVALUATION entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE1 = null;
+		}
+		
+		private void attach_FEEDBACKs(FEEDBACK entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_FEEDBACKs(FEEDBACK entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
+		
+		private void attach_NOTIFICATIONs(NOTIFICATION entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_NOTIFICATIONs(NOTIFICATION entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
+		
+		private void attach_PROJECTs(PROJECT entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_PROJECTs(PROJECT entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
+		
+		private void attach_PROJECT_TASKs(PROJECT_TASK entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_PROJECT_TASKs(PROJECT_TASK entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
+		
+		private void attach_TIME_KEEPs(TIME_KEEP entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_TIME_KEEPs(TIME_KEEP entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.EVALUATION")]
@@ -1077,6 +1854,8 @@ namespace DoAnKy3.Models
 		
 		private int _EMP_NUM;
 		
+		private string _PROJ_CODE;
+		
 		private int _EVAL_HRDWRK;
 		
 		private int _EVAL_FRDLY;
@@ -1084,6 +1863,12 @@ namespace DoAnKy3.Models
 		private int _EVAL_CRTV;
 		
 		private string _EVAL_CMT;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE1;
+		
+		private EntityRef<PROJECT> _PROJECT;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1093,6 +1878,8 @@ namespace DoAnKy3.Models
     partial void OnEVAL_NUMChanged();
     partial void OnEMP_NUMChanging(int value);
     partial void OnEMP_NUMChanged();
+    partial void OnPROJ_CODEChanging(string value);
+    partial void OnPROJ_CODEChanged();
     partial void OnEVAL_HRDWRKChanging(int value);
     partial void OnEVAL_HRDWRKChanged();
     partial void OnEVAL_FRDLYChanging(int value);
@@ -1105,6 +1892,9 @@ namespace DoAnKy3.Models
 		
 		public EVALUATION()
 		{
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
+			this._EMPLOYEE1 = default(EntityRef<EMPLOYEE>);
+			this._PROJECT = default(EntityRef<PROJECT>);
 			OnCreated();
 		}
 		
@@ -1119,6 +1909,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EVAL_NUM != value))
 				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEVAL_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EVAL_NUM = value;
@@ -1139,11 +1933,39 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EMP_NUM != value))
 				{
+					if (this._EMPLOYEE1.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEMP_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EMP_NUM = value;
 					this.SendPropertyChanged("EMP_NUM");
 					this.OnEMP_NUMChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PROJ_CODE", DbType="VarChar(5) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string PROJ_CODE
+		{
+			get
+			{
+				return this._PROJ_CODE;
+			}
+			set
+			{
+				if ((this._PROJ_CODE != value))
+				{
+					if (this._PROJECT.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPROJ_CODEChanging(value);
+					this.SendPropertyChanging();
+					this._PROJ_CODE = value;
+					this.SendPropertyChanged("PROJ_CODE");
+					this.OnPROJ_CODEChanged();
 				}
 			}
 		}
@@ -1228,6 +2050,108 @@ namespace DoAnKy3.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_EVALUATION", Storage="_EMPLOYEE", ThisKey="EVAL_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.EVALUATIONs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.EVALUATIONs.Add(this);
+						this._EVAL_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EVAL_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_EVALUATION1", Storage="_EMPLOYEE1", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE1
+		{
+			get
+			{
+				return this._EMPLOYEE1.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE1.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE1.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE1.Entity = null;
+						previousValue.EVALUATIONs1.Remove(this);
+					}
+					this._EMPLOYEE1.Entity = value;
+					if ((value != null))
+					{
+						value.EVALUATIONs1.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PROJECT_EVALUATION", Storage="_PROJECT", ThisKey="PROJ_CODE", OtherKey="PROJ_CODE", IsForeignKey=true)]
+		public PROJECT PROJECT
+		{
+			get
+			{
+				return this._PROJECT.Entity;
+			}
+			set
+			{
+				PROJECT previousValue = this._PROJECT.Entity;
+				if (((previousValue != value) 
+							|| (this._PROJECT.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._PROJECT.Entity = null;
+						previousValue.EVALUATIONs.Remove(this);
+					}
+					this._PROJECT.Entity = value;
+					if ((value != null))
+					{
+						value.EVALUATIONs.Add(this);
+						this._PROJ_CODE = value.PROJ_CODE;
+					}
+					else
+					{
+						this._PROJ_CODE = default(string);
+					}
+					this.SendPropertyChanged("PROJECT");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1265,6 +2189,8 @@ namespace DoAnKy3.Models
 		
 		private double _FDBK_SCALE;
 		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1283,6 +2209,7 @@ namespace DoAnKy3.Models
 		
 		public FEEDBACK()
 		{
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
 			OnCreated();
 		}
 		
@@ -1337,6 +2264,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EMP_NUM != value))
 				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEMP_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EMP_NUM = value;
@@ -1386,6 +2317,40 @@ namespace DoAnKy3.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_FEEDBACK", Storage="_EMPLOYEE", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.FEEDBACKs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.FEEDBACKs.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1407,7 +2372,7 @@ namespace DoAnKy3.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.NOTIFICATIONS")]
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.NOTIFICATION")]
 	public partial class NOTIFICATION : INotifyPropertyChanging, INotifyPropertyChanged
 	{
 		
@@ -1420,6 +2385,8 @@ namespace DoAnKy3.Models
 		private System.DateTime _NOTIF_DATE;
 		
 		private string _NOTIF_DETAIL;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1437,6 +2404,7 @@ namespace DoAnKy3.Models
 		
 		public NOTIFICATION()
 		{
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
 			OnCreated();
 		}
 		
@@ -1471,6 +2439,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EMP_NUM != value))
 				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEMP_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EMP_NUM = value;
@@ -1520,6 +2492,40 @@ namespace DoAnKy3.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_NOTIFICATION", Storage="_EMPLOYEE", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.NOTIFICATIONs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.NOTIFICATIONs.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -1551,7 +2557,15 @@ namespace DoAnKy3.Models
 		
 		private string _PROJ_NAME;
 		
+		private int _EMP_NUM;
+		
 		private string _PROJ_DESC;
+		
+		private EntitySet<EVALUATION> _EVALUATIONs;
+		
+		private EntitySet<PROJECT_TASK> _PROJECT_TASKs;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1561,12 +2575,17 @@ namespace DoAnKy3.Models
     partial void OnPROJ_CODEChanged();
     partial void OnPROJ_NAMEChanging(string value);
     partial void OnPROJ_NAMEChanged();
+    partial void OnEMP_NUMChanging(int value);
+    partial void OnEMP_NUMChanged();
     partial void OnPROJ_DESCChanging(string value);
     partial void OnPROJ_DESCChanged();
     #endregion
 		
 		public PROJECT()
 		{
+			this._EVALUATIONs = new EntitySet<EVALUATION>(new Action<EVALUATION>(this.attach_EVALUATIONs), new Action<EVALUATION>(this.detach_EVALUATIONs));
+			this._PROJECT_TASKs = new EntitySet<PROJECT_TASK>(new Action<PROJECT_TASK>(this.attach_PROJECT_TASKs), new Action<PROJECT_TASK>(this.detach_PROJECT_TASKs));
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
 			OnCreated();
 		}
 		
@@ -1610,6 +2629,30 @@ namespace DoAnKy3.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EMP_NUM", DbType="Int NOT NULL")]
+		public int EMP_NUM
+		{
+			get
+			{
+				return this._EMP_NUM;
+			}
+			set
+			{
+				if ((this._EMP_NUM != value))
+				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnEMP_NUMChanging(value);
+					this.SendPropertyChanging();
+					this._EMP_NUM = value;
+					this.SendPropertyChanged("EMP_NUM");
+					this.OnEMP_NUMChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PROJ_DESC", DbType="NVarChar(200)")]
 		public string PROJ_DESC
 		{
@@ -1626,6 +2669,66 @@ namespace DoAnKy3.Models
 					this._PROJ_DESC = value;
 					this.SendPropertyChanged("PROJ_DESC");
 					this.OnPROJ_DESCChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PROJECT_EVALUATION", Storage="_EVALUATIONs", ThisKey="PROJ_CODE", OtherKey="PROJ_CODE")]
+		public EntitySet<EVALUATION> EVALUATIONs
+		{
+			get
+			{
+				return this._EVALUATIONs;
+			}
+			set
+			{
+				this._EVALUATIONs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PROJECT_PROJECT_TASK", Storage="_PROJECT_TASKs", ThisKey="PROJ_CODE", OtherKey="PROJ_CODE")]
+		public EntitySet<PROJECT_TASK> PROJECT_TASKs
+		{
+			get
+			{
+				return this._PROJECT_TASKs;
+			}
+			set
+			{
+				this._PROJECT_TASKs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_PROJECT", Storage="_EMPLOYEE", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.PROJECTs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.PROJECTs.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
 				}
 			}
 		}
@@ -1649,6 +2752,30 @@ namespace DoAnKy3.Models
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
+		
+		private void attach_EVALUATIONs(EVALUATION entity)
+		{
+			this.SendPropertyChanging();
+			entity.PROJECT = this;
+		}
+		
+		private void detach_EVALUATIONs(EVALUATION entity)
+		{
+			this.SendPropertyChanging();
+			entity.PROJECT = null;
+		}
+		
+		private void attach_PROJECT_TASKs(PROJECT_TASK entity)
+		{
+			this.SendPropertyChanging();
+			entity.PROJECT = this;
+		}
+		
+		private void detach_PROJECT_TASKs(PROJECT_TASK entity)
+		{
+			this.SendPropertyChanging();
+			entity.PROJECT = null;
+		}
 	}
 	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.PROJECT_TASK")]
@@ -1670,6 +2797,10 @@ namespace DoAnKy3.Models
 		private string _PROJTSK_DESC;
 		
 		private string _PROJ_CODE;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
+		
+		private EntityRef<PROJECT> _PROJECT;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -1693,6 +2824,8 @@ namespace DoAnKy3.Models
 		
 		public PROJECT_TASK()
 		{
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
+			this._PROJECT = default(EntityRef<PROJECT>);
 			OnCreated();
 		}
 		
@@ -1727,6 +2860,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EMP_NUM != value))
 				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEMP_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EMP_NUM = value;
@@ -1827,11 +2964,83 @@ namespace DoAnKy3.Models
 			{
 				if ((this._PROJ_CODE != value))
 				{
+					if (this._PROJECT.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnPROJ_CODEChanging(value);
 					this.SendPropertyChanging();
 					this._PROJ_CODE = value;
 					this.SendPropertyChanged("PROJ_CODE");
 					this.OnPROJ_CODEChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_PROJECT_TASK", Storage="_EMPLOYEE", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.PROJECT_TASKs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.PROJECT_TASKs.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="PROJECT_PROJECT_TASK", Storage="_PROJECT", ThisKey="PROJ_CODE", OtherKey="PROJ_CODE", IsForeignKey=true)]
+		public PROJECT PROJECT
+		{
+			get
+			{
+				return this._PROJECT.Entity;
+			}
+			set
+			{
+				PROJECT previousValue = this._PROJECT.Entity;
+				if (((previousValue != value) 
+							|| (this._PROJECT.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._PROJECT.Entity = null;
+						previousValue.PROJECT_TASKs.Remove(this);
+					}
+					this._PROJECT.Entity = value;
+					if ((value != null))
+					{
+						value.PROJECT_TASKs.Add(this);
+						this._PROJ_CODE = value.PROJ_CODE;
+					}
+					else
+					{
+						this._PROJ_CODE = default(string);
+					}
+					this.SendPropertyChanged("PROJECT");
 				}
 			}
 		}
@@ -1873,6 +3082,8 @@ namespace DoAnKy3.Models
 		
 		private System.Nullable<decimal> _SAL_ALLW;
 		
+		private EntityRef<CONTRACT> _CONTRACT;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -1891,6 +3102,7 @@ namespace DoAnKy3.Models
 		
 		public SALARY()
 		{
+			this._CONTRACT = default(EntityRef<CONTRACT>);
 			OnCreated();
 		}
 		
@@ -1905,6 +3117,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._CONTR_NUM != value))
 				{
+					if (this._CONTRACT.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnCONTR_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._CONTR_NUM = value;
@@ -1994,6 +3210,40 @@ namespace DoAnKy3.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="CONTRACT_SALARY", Storage="_CONTRACT", ThisKey="CONTR_NUM", OtherKey="CONTR_NUM", IsForeignKey=true)]
+		public CONTRACT CONTRACT
+		{
+			get
+			{
+				return this._CONTRACT.Entity;
+			}
+			set
+			{
+				CONTRACT previousValue = this._CONTRACT.Entity;
+				if (((previousValue != value) 
+							|| (this._CONTRACT.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._CONTRACT.Entity = null;
+						previousValue.SALARies.Remove(this);
+					}
+					this._CONTRACT.Entity = value;
+					if ((value != null))
+					{
+						value.SALARies.Add(this);
+						this._CONTR_NUM = value.CONTR_NUM;
+					}
+					else
+					{
+						this._CONTR_NUM = default(int);
+					}
+					this.SendPropertyChanged("CONTRACT");
+				}
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -2033,6 +3283,8 @@ namespace DoAnKy3.Models
 		
 		private float _TIME_ABST;
 		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -2053,6 +3305,7 @@ namespace DoAnKy3.Models
 		
 		public TIME_KEEP()
 		{
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
 			OnCreated();
 		}
 		
@@ -2087,6 +3340,10 @@ namespace DoAnKy3.Models
 			{
 				if ((this._EMP_NUM != value))
 				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
 					this.OnEMP_NUMChanging(value);
 					this.SendPropertyChanging();
 					this._EMP_NUM = value;
@@ -2176,136 +3433,36 @@ namespace DoAnKy3.Models
 			}
 		}
 		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.USERS")]
-	public partial class USER : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _USER_ID;
-		
-		private string _USER_PSWD;
-		
-		private bool _USER_STATE;
-		
-		private string _TOKEN;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnUSER_IDChanging(int value);
-    partial void OnUSER_IDChanged();
-    partial void OnUSER_PSWDChanging(string value);
-    partial void OnUSER_PSWDChanged();
-    partial void OnUSER_STATEChanging(bool value);
-    partial void OnUSER_STATEChanged();
-    partial void OnTOKENChanging(string value);
-    partial void OnTOKENChanged();
-    #endregion
-		
-		public USER()
-		{
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USER_ID", DbType="Int NOT NULL", IsPrimaryKey=true)]
-		public int USER_ID
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_TIME_KEEP", Storage="_EMPLOYEE", ThisKey="EMP_NUM", OtherKey="EMP_NUM", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
 		{
 			get
 			{
-				return this._USER_ID;
+				return this._EMPLOYEE.Entity;
 			}
 			set
 			{
-				if ((this._USER_ID != value))
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
 				{
-					this.OnUSER_IDChanging(value);
 					this.SendPropertyChanging();
-					this._USER_ID = value;
-					this.SendPropertyChanged("USER_ID");
-					this.OnUSER_IDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USER_PSWD", DbType="VarChar(256) NOT NULL", CanBeNull=false)]
-		public string USER_PSWD
-		{
-			get
-			{
-				return this._USER_PSWD;
-			}
-			set
-			{
-				if ((this._USER_PSWD != value))
-				{
-					this.OnUSER_PSWDChanging(value);
-					this.SendPropertyChanging();
-					this._USER_PSWD = value;
-					this.SendPropertyChanged("USER_PSWD");
-					this.OnUSER_PSWDChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USER_STATE", DbType="Bit NOT NULL")]
-		public bool USER_STATE
-		{
-			get
-			{
-				return this._USER_STATE;
-			}
-			set
-			{
-				if ((this._USER_STATE != value))
-				{
-					this.OnUSER_STATEChanging(value);
-					this.SendPropertyChanging();
-					this._USER_STATE = value;
-					this.SendPropertyChanged("USER_STATE");
-					this.OnUSER_STATEChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TOKEN", DbType="VarChar(80)")]
-		public string TOKEN
-		{
-			get
-			{
-				return this._TOKEN;
-			}
-			set
-			{
-				if ((this._TOKEN != value))
-				{
-					this.OnTOKENChanging(value);
-					this.SendPropertyChanging();
-					this._TOKEN = value;
-					this.SendPropertyChanged("TOKEN");
-					this.OnTOKENChanged();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.TIME_KEEPs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.TIME_KEEPs.Add(this);
+						this._EMP_NUM = value.EMP_NUM;
+					}
+					else
+					{
+						this._EMP_NUM = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
 				}
 			}
 		}

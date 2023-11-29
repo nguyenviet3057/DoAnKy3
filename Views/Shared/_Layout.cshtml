@@ -34,6 +34,7 @@
 
     <!-- Custom Css -->
     <link rel="stylesheet" href="/Content/Site.css" />
+
 </head>
 <body class="  ">
     <!-- loader Start -->
@@ -247,11 +248,11 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
-                            <li class="nav-item dropdown">
+                            @*<li class="nav-item dropdown">
                                 <a href="#">
                                     <img src="/Content/assets/images/Flag/flag002.png" class="rounded-circle" style="height: 30px; min-width: 30px; width: 30px;">
                                 </a>
-                            </li>
+                            </li>*@
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link" id="notification-drop" data-bs-toggle="dropdown">
                                     <svg class="icon-24" width="24" viewBox="0 0 24 24" fill="none"
@@ -739,8 +740,9 @@
 
     <!-- App Script -->
     <script src="/Content/assets/js/hope-ui.js" defer></script>
-
+    
     <!-- Custom Script -->
     <script src="/Scripts/script.js" defer></script>
 </body>
+    @RenderSection("script", false)
 </html>

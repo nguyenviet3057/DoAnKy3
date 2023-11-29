@@ -6,6 +6,17 @@
       <Column Name="CONTR_SIGN_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="CONTR_END_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="CONTR_SAL_BASE" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Association Name="CONTRACT_SALARY" Member="SALARies" ThisKey="CONTR_NUM" OtherKey="CONTR_NUM" Type="SALARY" />
+      <Association Name="EMPLOYEE_CONTRACT" Member="EMPLOYEE" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.USERS" Member="USERs">
+    <Type Name="USER">
+      <Column Name="USER_ID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="USER_PSWD" Type="System.String" DbType="VarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="USER_TOKEN" Type="System.String" DbType="VarChar(256)" CanBeNull="true" />
+      <Column Name="USER_STATE" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="EMPLOYEE_USER" Member="EMPLOYEE" ThisKey="USER_ID" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.DEGREE" Member="DEGREEs">
@@ -13,12 +24,15 @@
       <Column Name="DEG_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="DEG_NAME" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="DEG_DESC" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Association Name="DEGREE_DEGREE_CONFIRM" Member="DEGREE_CONFIRMs" ThisKey="DEG_CODE" OtherKey="DEG_CODE" Type="DEGREE_CONFIRM" />
     </Type>
   </Table>
   <Table Name="dbo.DEGREE_CONFIRM" Member="DEGREE_CONFIRMs">
     <Type Name="DEGREE_CONFIRM">
       <Column Name="DEG_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Association Name="DEGREE_DEGREE_CONFIRM" Member="DEGREE" ThisKey="DEG_CODE" OtherKey="DEG_CODE" Type="DEGREE" IsForeignKey="true" />
+      <Association Name="EMPLOYEE_DEGREE_CONFIRM" Member="EMPLOYEE" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.DEPARTMENT" Member="DEPARTMENTs">
@@ -28,6 +42,8 @@
       <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="DEPT_ADDRESS" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="DEPT_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Association Name="DEPARTMENT_EMPLOYEE" Member="EMPLOYEEs" ThisKey="DEPT_CODE" OtherKey="DEPT_CODE" Type="EMPLOYEE" />
+      <Association Name="EMPLOYEE_DEPARTMENT" Member="EMPLOYEE" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.EMPLOYEE" Member="EMPLOYEEs">
@@ -45,16 +61,32 @@
       <Column Name="EMP_NAT" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
       <Column Name="EMP_POS" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
       <Column Name="DEPT_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" CanBeNull="false" />
+      <Association Name="EMPLOYEE_CONTRACT" Member="CONTRACTs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="CONTRACT" />
+      <Association Name="EMPLOYEE_USER" Member="USER" ThisKey="EMP_NUM" OtherKey="USER_ID" Type="USER" Cardinality="One" />
+      <Association Name="EMPLOYEE_DEGREE_CONFIRM" Member="DEGREE_CONFIRMs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="DEGREE_CONFIRM" />
+      <Association Name="EMPLOYEE_DEPARTMENT" Member="DEPARTMENTs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="DEPARTMENT" />
+      <Association Name="EMPLOYEE_EVALUATION" Member="EVALUATIONs" ThisKey="EMP_NUM" OtherKey="EVAL_NUM" Type="EVALUATION" />
+      <Association Name="EMPLOYEE_EVALUATION1" Member="EVALUATIONs1" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EVALUATION" />
+      <Association Name="EMPLOYEE_FEEDBACK" Member="FEEDBACKs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="FEEDBACK" />
+      <Association Name="EMPLOYEE_NOTIFICATION" Member="NOTIFICATIONs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="NOTIFICATION" />
+      <Association Name="EMPLOYEE_PROJECT" Member="PROJECTs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="PROJECT" />
+      <Association Name="EMPLOYEE_PROJECT_TASK" Member="PROJECT_TASKs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="PROJECT_TASK" />
+      <Association Name="EMPLOYEE_TIME_KEEP" Member="TIME_KEEPs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="TIME_KEEP" />
+      <Association Name="DEPARTMENT_EMPLOYEE" Member="DEPARTMENT" ThisKey="DEPT_CODE" OtherKey="DEPT_CODE" Type="DEPARTMENT" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.EVALUATION" Member="EVALUATIONs">
     <Type Name="EVALUATION">
       <Column Name="EVAL_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="PROJ_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="EVAL_HRDWRK" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="EVAL_FRDLY" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="EVAL_CRTV" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="EVAL_CMT" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Association Name="EMPLOYEE_EVALUATION" Member="EMPLOYEE" ThisKey="EVAL_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
+      <Association Name="EMPLOYEE_EVALUATION1" Member="EMPLOYEE1" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
+      <Association Name="PROJECT_EVALUATION" Member="PROJECT" ThisKey="PROJ_CODE" OtherKey="PROJ_CODE" Type="PROJECT" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.FEEDBACK" Member="FEEDBACKs">
@@ -64,21 +96,27 @@
       <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="FDBK_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
       <Column Name="FDBK_SCALE" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="EMPLOYEE_FEEDBACK" Member="EMPLOYEE" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
   </Table>
-  <Table Name="dbo.NOTIFICATIONS" Member="NOTIFICATIONs">
+  <Table Name="dbo.NOTIFICATION" Member="NOTIFICATIONs">
     <Type Name="NOTIFICATION">
       <Column Name="NOTIF_NUM" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="NOTIF_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="NOTIF_DETAIL" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="EMPLOYEE_NOTIFICATION" Member="EMPLOYEE" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.PROJECT" Member="PROJECTs">
     <Type Name="PROJECT">
       <Column Name="PROJ_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="PROJ_NAME" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="PROJ_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
+      <Association Name="PROJECT_EVALUATION" Member="EVALUATIONs" ThisKey="PROJ_CODE" OtherKey="PROJ_CODE" Type="EVALUATION" />
+      <Association Name="PROJECT_PROJECT_TASK" Member="PROJECT_TASKs" ThisKey="PROJ_CODE" OtherKey="PROJ_CODE" Type="PROJECT_TASK" />
+      <Association Name="EMPLOYEE_PROJECT" Member="EMPLOYEE" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.PROJECT_TASK" Member="PROJECT_TASKs">
@@ -90,6 +128,8 @@
       <Column Name="PROJTSK_IMG" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
       <Column Name="PROJTSK_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
       <Column Name="PROJ_CODE" Type="System.String" DbType="VarChar(5) NOT NULL" CanBeNull="false" />
+      <Association Name="EMPLOYEE_PROJECT_TASK" Member="EMPLOYEE" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
+      <Association Name="PROJECT_PROJECT_TASK" Member="PROJECT" ThisKey="PROJ_CODE" OtherKey="PROJ_CODE" Type="PROJECT" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.SALARY" Member="SALARies">
@@ -99,6 +139,7 @@
       <Column Name="SAL_INC" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Column Name="SAL_BONUS" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Column Name="SAL_ALLW" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Association Name="CONTRACT_SALARY" Member="CONTRACT" ThisKey="CONTR_NUM" OtherKey="CONTR_NUM" Type="CONTRACT" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.TIME_KEEP" Member="TIME_KEEPs">
@@ -109,14 +150,7 @@
       <Column Name="TIME_CLK_IN" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
       <Column Name="TIME_CLK_OUT" Type="System.TimeSpan" DbType="Time" CanBeNull="true" />
       <Column Name="TIME_ABST" Type="System.Single" DbType="Real NOT NULL" CanBeNull="false" />
-    </Type>
-  </Table>
-  <Table Name="dbo.USERS" Member="USERs">
-    <Type Name="USER">
-      <Column Name="USER_ID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="USER_PSWD" Type="System.String" DbType="VarChar(256) NOT NULL" CanBeNull="false" />
-      <Column Name="USER_STATE" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="TOKEN" Type="System.String" DbType="VarChar(80)" CanBeNull="true" />
+      <Association Name="EMPLOYEE_TIME_KEEP" Member="EMPLOYEE" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>
