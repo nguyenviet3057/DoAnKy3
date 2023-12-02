@@ -249,10 +249,10 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
                             @*<li class="nav-item dropdown">
-                                <a href="#">
-                                    <img src="/Content/assets/images/Flag/flag002.png" class="rounded-circle" style="height: 30px; min-width: 30px; width: 30px;">
-                                </a>
-                            </li>*@
+                                    <a href="#">
+                                        <img src="/Content/assets/images/Flag/flag002.png" class="rounded-circle" style="height: 30px; min-width: 30px; width: 30px;">
+                                    </a>
+                                </li>*@
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link" id="notification-drop" data-bs-toggle="dropdown">
                                     <svg class="icon-24" width="24" viewBox="0 0 24 24" fill="none"
@@ -348,8 +348,8 @@
                                     <img src="/Content/assets/images/avatars/avtar_3.png" alt="User-Profile"
                                          class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded">
                                     <div class="caption ms-3 d-none d-md-block ">
-                                        <h6 class="mb-0 caption-title">Austin Robertson</h6>
-                                        <p class="mb-0 caption-sub-title">Marketing Administrator</p>
+                                        <h6 class="mb-0 caption-title" id="user-fullname"></h6>
+                                        <p class="mb-0 caption-sub-title" id="user-department"></p>
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -707,6 +707,8 @@
         </div>
     </div>
 
+    <div class="tab-pane bd-heading-1 fade active show" id="alert-container" role="tabpanel"></div>
+
     <!-- FontAwesome Script -->
     <script src="/Content/assets/vendor/fontawesome/font-awesome_6.4.2_js_all.min.js" defer></script>
 
@@ -740,7 +742,7 @@
 
     <!-- App Script -->
     <script src="/Content/assets/js/hope-ui.js" defer></script>
-    
+
     <!-- Custom Script -->
     <script src="/Scripts/script.js" defer></script>
 </body>

@@ -202,18 +202,14 @@
                     <div class="card" data-aos="fade-up" data-aos-delay="900">
                         <div class="flex-wrap card-header d-flex justify-content-between">
                             <div class="header-title">
-                                <h4 class="card-title">Average evaluation</h4>
+                                <h4 class="card-title">Progress</h4>
                             </div>
                             <div class="dropdown">
-                                <a href="#" class="text-gray dropdown-toggle" id="dropdownMenuButton1"
+                                <a href="#" class="text-gray dropdown-toggle" id="current-project-progress"
                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    This Week
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end"
-                                    aria-labelledby="dropdownMenuButton1">
-                                    <li><a class="dropdown-item" href="#">This Week</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                                    aria-labelledby="current-project" id="list-project-progress">
                                 </ul>
                             </div>
                         </div>
@@ -229,8 +225,8 @@
                                             </g>
                                         </svg>
                                         <div class="ms-3">
-                                            <span class="text-gray">Highest Dep</span>
-                                            <h6>76.0</h6>
+                                            <span class="text-gray">Average</span>
+                                            <h6 id="progress-group">0.0</h6>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-start">
@@ -241,8 +237,8 @@
                                             </g>
                                         </svg>
                                         <div class="ms-3">
-                                            <span class="text-gray">My Dep</span>
-                                            <h6>53.0</h6>
+                                            <span class="text-gray">Self</span>
+                                            <h6 id="progress-self">0.0</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -254,7 +250,7 @@
                     <div class="card" data-aos="fade-up" data-aos-delay="1000">
                         <div class="flex-wrap card-header d-flex justify-content-between">
                             <div class="header-title">
-                                <h4 class="card-title">My evaluation</h4>
+                                <h4 class="card-title">Evaluation</h4>
                             </div>
                             <div class="dropdown">
                                 <a href="#" class="text-gray dropdown-toggle" id="dropdownMenuButton3"
@@ -282,12 +278,12 @@
                     <div class="card" data-aos="fade-up" data-aos-delay="500">
                         <div class="text-center card-body d-flex justify-content-around">
                             <div>
-                                <h2 class="mb-2">7</h2>
+                                <h2 class="mb-2" id="team-project">0</h2>
                                 <p class="mb-0 text-gray">Team Project</p>
                             </div>
                             <hr class="hr-vertial">
                             <div>
-                                <h2 class="mb-2">3</h2>
+                                <h2 class="mb-2" id="total-employee">0</h2>
                                 <p class="mb-0 text-gray">Total Employee</p>
                             </div>
                         </div>
@@ -297,7 +293,7 @@
                     <div class="card" data-aos="fade-up" data-aos-delay="600">
                         <div class="flex-wrap card-header d-flex justify-content-between">
                             <div class="header-title">
-                                <h4 class="mb-2 card-title">Time keeping</h4>
+                                <h4 class="mb-2 card-title">Time Keeping</h4>
                                 <p class="mb-0">
                                     @*<svg class="me-2 icon-24" width="24" height="24" viewBox="0 0 24 24">
                                             <path fill="#17904b"
@@ -307,42 +303,7 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="mb-2  d-flex profile-media align-items-top">
-                                <div class="mt-1 profile-dots-pills border-primary"></div>
-                                <div class="ms-4">
-                                    <h6 class="mb-1 ">$2400, Purchase</h6>
-                                    <span class="mb-0">11 JUL 8:10 PM</span>
-                                </div>
-                            </div>
-                            <div class="mb-2  d-flex profile-media align-items-top">
-                                <div class="mt-1 profile-dots-pills border-primary"></div>
-                                <div class="ms-4">
-                                    <h6 class="mb-1 ">New order #8744152</h6>
-                                    <span class="mb-0">11 JUL 11 PM</span>
-                                </div>
-                            </div>
-                            <div class="mb-2  d-flex profile-media align-items-top">
-                                <div class="mt-1 profile-dots-pills border-primary"></div>
-                                <div class="ms-4">
-                                    <h6 class="mb-1 ">Affiliate Payout</h6>
-                                    <span class="mb-0">11 JUL 7:64 PM</span>
-                                </div>
-                            </div>
-                            <div class="mb-2  d-flex profile-media align-items-top">
-                                <div class="mt-1 profile-dots-pills border-primary"></div>
-                                <div class="ms-4">
-                                    <h6 class="mb-1 ">New user added</h6>
-                                    <span class="mb-0">11 JUL 1:21 AM</span>
-                                </div>
-                            </div>
-                            <div class="mb-1  d-flex profile-media align-items-top">
-                                <div class="mt-1 profile-dots-pills border-primary"></div>
-                                <div class="ms-4">
-                                    <h6 class="mb-1 ">Product added</h6>
-                                    <span class="mb-0">11 JUL 4:50 AM</span>
-                                </div>
-                            </div>
+                        <div class="card-body" id="time-keeping">
                         </div>
                     </div>
                 </div>
@@ -355,6 +316,9 @@
 {
     <script>
         $(document).ready(function () {
+            let prog_group = prog_self = [];
+            let eval_group = eval_self = [[]]; //[Hardwork, Friendly, Creative]
+
             let access_token = getCookie("access_token");
             $.ajax({
                 url: "/home/getdata",
@@ -365,7 +329,37 @@
                 success: function (result) {
                     switch (result.status) {
                         case StatusCode.Success:
-                            console.log(JSON.parse(result.data));
+                            data = JSON.parse(result.data);
+                            console.log(data);
+                            $("#user-fullname").text(data.user_data.name);
+                            $("#user-department").text(data.user_data.department);
+
+                            prog_group = data.progress_group;
+                            prog_self = data.progress_self;
+                            eval_group = data.evaluation_group;
+                            eval_self = data.evaluation_self;
+
+                            $("#current-project-progress").text(prog_group[0].PROJ_NAME);
+                            prog_group.forEach(function (item, index) {
+                                $("#list-project-progress").append('<li><a class="dropdown-item" href="#">' + item.PROJ_NAME + '</a></li>')
+                            })
+                            drawProgress(prog_group[0].AVG_PROG, prog_self[0].AVG_PROG);
+
+                            drawEvaluation([eval_group[0].AVG_EVAL_HW, eval_group[0].AVG_EVAL_FR, eval_group[0].AVG_EVAL_CR], [eval_self[0].AVG_EVAL_HW, eval_self[0].AVG_EVAL_FR, eval_self[0].AVG_EVAL_CR]);
+
+                            $("#team-project").text(data.team_project ?? 0);
+                            $("#total-employee").text(data.total_employee ?? 0);
+
+                            let time_keeping_div = $("#time-keeping");
+                            if (Array.isArray(data.time_keeping)) {
+                                data.time_keeping.forEach(function (item, index) {
+                                    let absent_status = item.absent_status ?? "Absent";
+                                    let description = item.description ?? "Not permitted";
+                                    time_keeping_div.append(
+                                        "<div class='mb-2  d-flex profile-media align-items-top'><div class='mt-1 profile-dots-pills border-primary'></div><div class='ms-4'><h6 class='mb-1 '>" + absent_status + "</h6 ><span class='mb-0'>" + description + "</span></div></div>"
+                                    );
+                                })
+                            }
                             break;
                         default:
                             setCookie("access_token", "", -1);
@@ -374,6 +368,129 @@
                     }
                 }
             })
+
+            function drawProgress(progress_group = 0, progress_self = 0) {
+                if (document.querySelectorAll('#myChart').length) {
+                    const options = {
+                        series: [progress_group , progress_self],
+                        chart: {
+                            height: 230,
+                            type: 'radialBar',
+                        },
+                        colors: ["#4bc7d2", "#3a57e8"],
+                        plotOptions: {
+                            radialBar: {
+                                hollow: {
+                                    margin: 10,
+                                    size: "50%",
+                                },
+                                track: {
+                                    margin: 10,
+                                    strokeWidth: '50%',
+                                },
+                                dataLabels: {
+                                    show: false,
+                                }
+                            }
+                        },
+                        labels: ['Apples', 'Oranges'],
+                    };
+                    if (ApexCharts !== undefined) {
+                        const chart = new ApexCharts(document.querySelector("#myChart"), options);
+                        chart.render();
+                        document.addEventListener('ColorChange', (e) => {
+                            const newOpt = { colors: [e.detail.detail2, e.detail.detail1], }
+                            chart.updateOptions(newOpt)
+
+                        })
+                    }
+
+                    $("#progress-group").text(progress_group);
+                    $("#progress-self").text(progress_self);
+                }
+
+            }
+
+            function drawEvaluation(evaluation_group = [0, 0, 0], evaluation_self = [0, 0, 0]) {
+                if (document.querySelectorAll('#d-activity').length) {
+                    const options = {
+                        series: [{
+                            name: 'Average',
+                            data: eval_group
+                        }, {
+                            name: 'Self',
+                            data: evaluation_self
+                        }],
+                        chart: {
+                            type: 'bar',
+                            height: 230,
+                            stacked: true,
+                            toolbar: {
+                                show: false
+                            }
+                        },
+                        colors: ["#3a57e8", "#4bc7d2"],
+                        plotOptions: {
+                            bar: {
+                                horizontal: false,
+                                columnWidth: '28%',
+                                endingShape: 'rounded',
+                                borderRadius: 5,
+                            },
+                        },
+                        legend: {
+                            show: false
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        stroke: {
+                            show: true,
+                            width: 2,
+                            colors: ['transparent']
+                        },
+                        xaxis: {
+                            categories: ['Hardwork', 'Friendly', 'Creative'],
+                            labels: {
+                                minHeight: 20,
+                                maxHeight: 24,
+                                style: {
+                                    colors: "#8A92A6",
+                                },
+                            }
+                        },
+                        yaxis: {
+                            title: {
+                                text: ''
+                            },
+                            labels: {
+                                minWidth: 19,
+                                maxWidth: 19,
+                                style: {
+                                    colors: "#8A92A6",
+                                },
+                            }
+                        },
+                        fill: {
+                            opacity: 1
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: function (val) {
+                                    return val + " points"
+                                }
+                            }
+                        }
+                    };
+
+                    const chart = new ApexCharts(document.querySelector("#d-activity"), options);
+                    chart.render();
+                    document.addEventListener('ColorChange', (e) => {
+                        const newOpt = { colors: [e.detail.detail1, e.detail.detail2], }
+                        chart.updateOptions(newOpt)
+                    })
+                }
+            }
         })
     </script>
 }

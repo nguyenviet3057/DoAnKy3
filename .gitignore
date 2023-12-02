@@ -1,3 +1,5 @@
 .vs
+*.csproj.user
 obj/
 bin/
+Web.config

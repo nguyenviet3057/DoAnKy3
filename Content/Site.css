@@ -1,3 +1,30 @@
 ﻿i.custom-fa-18 {
     width: 18px;
 }
+
+#alert-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 300px;
+    height: fit-content;
+    max-height: 300px;
+    overflow-y: hidden;
+    z-index: 999;
+}
+
+#alert-container .alert {
+    position: relative;
+    height: 40px;
+    font-size: small;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+    #alert-container .alert * {
+        position: relative !important;
+        padding: 0px !important;
+    }

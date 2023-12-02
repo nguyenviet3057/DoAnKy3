@@ -26,6 +26,8 @@ namespace DoAnKy3.Controllers
             {
                 int userId = int.Parse(Request["userid"]);
                 string password = Request["password"];
+                bool remember = bool.Parse(Request["remember"]);
+
                 var result = db.USERs.Where(o => o.USER_ID == userId && o.USER_PSWD == password).FirstOrDefault();
                 if (result == null)
                 {
@@ -36,6 +38,8 @@ namespace DoAnKy3.Controllers
 
                 dynamic data = new ExpandoObject();
                 data.token = ComputeSha256Hash(userId.ToString() + password + DateTime.Now.Subtract(new DateTime(1970,1,1)).TotalSeconds);
+                if (remember) data.expire = 5 * 24 * 3600;
+                else data.expire = 24 * 3600;
                 var obj = (IDictionary<string, object>)data;
 
                 response.status = ResponseModel.StatusCode.Success;
@@ -71,6 +75,22 @@ namespace DoAnKy3.Controllers
 
             response.status = ResponseModel.StatusCode.Success;
             response.message = "Auto login success!";
+            return Json(response);
+        }
+
+        [HttpPost]
+        public ActionResult Logout()
+        {
+            string token = Request["access_token"];
+            var result = db.USERs.Where(o => o.USER_TOKEN == token).FirstOrDefault();
+            if (result != null)
+            {
+                result.USER_TOKEN = null;
+                db.SubmitChanges();
+            }
+            var response = new ResponseModel();
+            response.status = ResponseModel.StatusCode.Success;
+            response.message = "Logout success!";
             return Json(response);
         }
     }

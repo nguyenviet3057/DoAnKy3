@@ -31,6 +31,35 @@
     <!-- RTL Css -->
     <link rel="stylesheet" href="/Content/assets/css/rtl.min.css" />
 
+    <style>
+        #alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            height: fit-content;
+            max-height: 300px;
+            overflow-y: hidden;
+            z-index: 999;
+        }
+
+        #alert-container .alert {
+            position: relative;
+            height: 40px;
+            font-size: small;
+            padding: 15px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #alert-container .alert * {
+            position: relative !important;
+            padding: 0px !important;
+        }
+    </style>
+
 </head>
 <body class=" " data-bs-spy="scroll" data-bs-target="#elements-section" data-bs-offset="0" tabindex="0">
     <!-- loader Start -->
@@ -96,8 +125,8 @@
                                             </div>
                                             <div class="col-lg-12 d-flex justify-content-between">
                                                 <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="customCheck1">
-                                                    <label class="form-check-label" for="customCheck1">Remember Me</label>
+                                                    <input type="checkbox" class="form-check-input" id="remember">
+                                                    <label class="form-check-label" for="remember">Remember Me</label>
                                                 </div>
                                                 <a href="recoverpw.html">Forgot Password?</a>
                                             </div>
@@ -105,26 +134,6 @@
                                         <div class="d-flex justify-content-center">
                                             <button type="button" id="submit-btn" class="btn btn-primary">Sign In</button>
                                         </div>
-                                        <p class="text-center my-3">or sign in with other accounts?</p>
-                                        <div class="d-flex justify-content-center">
-                                            <ul class="list-group list-group-horizontal list-group-flush">
-                                                <li class="list-group-item border-0 pb-0">
-                                                    <a href="#"><img src="/Content/assets/images/brands/fb.svg" alt="fb"></a>
-                                                </li>
-                                                <li class="list-group-item border-0 pb-0">
-                                                    <a href="#"><img src="/Content/assets/images/brands/gm.svg" alt="gm"></a>
-                                                </li>
-                                                <li class="list-group-item border-0 pb-0">
-                                                    <a href="#"><img src="/Content/assets/images/brands/im.svg" alt="im"></a>
-                                                </li>
-                                                <li class="list-group-item border-0 pb-0">
-                                                    <a href="#"><img src="/Content/assets/images/brands/li.svg" alt="li"></a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <p class="mt-3 text-center">
-                                            Don’t have an account? <a href="sign-up.html" class="text-underline">Click here to sign up.</a>
-                                        </p>
                                     </form>
                                 </div>
                             </div>
@@ -147,6 +156,7 @@
             </div>
         </section>
     </div>
+    <div class="tab-pane bd-heading-1 fade active show" id="alert-container" role="tabpanel"></div>
 
     <!-- Library Bundle Script -->
     <script src="/Content/assets/js/core/libs.min.js"></script>
@@ -232,10 +242,13 @@
             //console.log("Token not found!");
         }
 
+        let alert_count = 0;
+        let alert_close_btn = null;
         $("#submit-btn").click(function () {
             let formData = new FormData();
             formData.append("userid", $("#userid").val());
             formData.append("password", $("#password").val());
+            formData.append("remember", $("#remember").prop("checked"));
             $.ajax({
                 url: "/login/login",
                 data: formData,
@@ -245,11 +258,27 @@
                 success: function (result) {
                     switch (result.status) {
                         case StatusCode.Success:
-                            setCookie("access_token", JSON.parse(result.data).token, 3 * 24 * 3600);
-                            setTimeout(window.location.pathname = "/home", 1000);
+                            setCookie("access_token", JSON.parse(result.data).token, JSON.parse(result.data).expire);
+                            $("#alert-container").append('<div class="mb-3 alert alert-left alert-success alert-dismissible fade show" role="alert"><span>Login successfully!</span><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                            setTimeout(() => window.location.pathname = "/home", 1500);
+                            break;
+                        case StatusCode.NotFound:
+                            //alert("Account not found!");
+                            $("#alert-container").append('<div id="alert' + alert_count + '" class="mb-3 alert alert-left alert-warning alert-dismissible fade show" role="alert"><span>Account not found!</span><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                            alert_close_btn = $("#alert-container > div#alert" + alert_count);
+                            setTimeout(() => {
+                                alert_close_btn.remove();
+                            }, 5000);
+                            alert_count++;
                             break;
                         default:
-                            alert("Login failed!");
+                            //alert("Login failed!");
+                            $("#alert-container").append('<div id="alert' + alert_count + '" class="mb-3 alert alert-left alert-warning alert-dismissible fade show" role="alert"><span>Login failed!</span><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                            alert_close_btn = $("#alert-container > div#alert" + alert_count);
+                            setTimeout(() => {
+                                alert_close_btn.remove();
+                            }, 5000);
+                            alert_count++;
                             break;
                     }
                 },
