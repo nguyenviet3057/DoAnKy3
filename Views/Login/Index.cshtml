@@ -52,11 +52,22 @@
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
+            animation: removed 0.5s linear 3s 1 normal forwards;
         }
 
         #alert-container .alert * {
             position: relative !important;
             padding: 0px !important;
+        }
+
+        @@keyframes removed {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                display: none;
+            }
         }
     </style>
 
@@ -187,40 +198,12 @@
     <!-- App Script -->
     <script src="/Content/assets/js/hope-ui.js" defer></script>
 
+    <!-- Custom Script -->
+    <script src="/Scripts/script.js" defer></script>
 </body>
 </html>
 
 <script>
-    const StatusCode = {
-        Success: 1,
-        Error: 0,
-        NotFound: 2,
-        Unauthorized: 3
-    };
-
-    function setCookie(cname, cvalue, ctime) {
-        const d = new Date();
-        d.setTime(d.getTime() + (ctime * 1000));
-        let expires = "expires=" + d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    }
-
-    function getCookie(cname) {
-        let name = cname + "=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for (let i = 0; i < ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
     $(document).ready(function () {
         let access_token = getCookie("access_token");
         if (access_token != "") {
@@ -259,26 +242,16 @@
                     switch (result.status) {
                         case StatusCode.Success:
                             setCookie("access_token", JSON.parse(result.data).token, JSON.parse(result.data).expire);
-                            $("#alert-container").append('<div class="mb-3 alert alert-left alert-success alert-dismissible fade show" role="alert"><span>Login successfully!</span><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+                            AppendAlert("Login successfully!");
                             setTimeout(() => window.location.pathname = "/home", 1500);
                             break;
                         case StatusCode.NotFound:
                             //alert("Account not found!");
-                            $("#alert-container").append('<div id="alert' + alert_count + '" class="mb-3 alert alert-left alert-warning alert-dismissible fade show" role="alert"><span>Account not found!</span><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
-                            alert_close_btn = $("#alert-container > div#alert" + alert_count);
-                            setTimeout(() => {
-                                alert_close_btn.remove();
-                            }, 5000);
-                            alert_count++;
+                            AppendAlert("Account not found!");
                             break;
                         default:
                             //alert("Login failed!");
-                            $("#alert-container").append('<div id="alert' + alert_count + '" class="mb-3 alert alert-left alert-warning alert-dismissible fade show" role="alert"><span>Login failed!</span><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
-                            alert_close_btn = $("#alert-container > div#alert" + alert_count);
-                            setTimeout(() => {
-                                alert_close_btn.remove();
-                            }, 5000);
-                            alert_count++;
+                            AppendAlert("Login failed!");
                             break;
                     }
                 },

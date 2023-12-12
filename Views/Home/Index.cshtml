@@ -330,14 +330,13 @@
                     switch (result.status) {
                         case StatusCode.Success:
                             data = JSON.parse(result.data);
-                            console.log(data);
-                            $("#user-fullname").text(data.user_data.name);
-                            $("#user-department").text(data.user_data.department);
+                            //console.log(data);
 
                             prog_group = data.progress_group;
                             prog_self = data.progress_self;
                             eval_group = data.evaluation_group;
                             eval_self = data.evaluation_self;
+                            time_keeping = data.time_keeping;
 
                             $("#current-project-progress").text(prog_group[0].PROJ_NAME);
                             prog_group.forEach(function (item, index) {
@@ -345,13 +344,13 @@
                             })
                             drawProgress(prog_group[0].AVG_PROG, prog_self[0].AVG_PROG);
 
-                            drawEvaluation([eval_group[0].AVG_EVAL_HW, eval_group[0].AVG_EVAL_FR, eval_group[0].AVG_EVAL_CR], [eval_self[0].AVG_EVAL_HW, eval_self[0].AVG_EVAL_FR, eval_self[0].AVG_EVAL_CR]);
+                            //drawEvaluation([eval_group[0].AVG_EVAL_HW, eval_group[0].AVG_EVAL_FR, eval_group[0].AVG_EVAL_CR], [eval_self[0].AVG_EVAL_HW, eval_self[0].AVG_EVAL_FR, eval_self[0].AVG_EVAL_CR]);
 
                             $("#team-project").text(data.team_project ?? 0);
                             $("#total-employee").text(data.total_employee ?? 0);
 
                             let time_keeping_div = $("#time-keeping");
-                            if (Array.isArray(data.time_keeping)) {
+                            if (Array.isArray(time_keeping)) {
                                 data.time_keeping.forEach(function (item, index) {
                                     let absent_status = item.absent_status ?? "Absent";
                                     let description = item.description ?? "Not permitted";
@@ -360,6 +359,12 @@
                                     );
                                 })
                             }
+
+                            $("#my-modal").fadeOut();
+                            break;
+
+                        case StatusCode.Error:
+                            AppendAlert("Get dashboard data failed!", StatusAlert.Error);
                             break;
                         default:
                             setCookie("access_token", "", -1);

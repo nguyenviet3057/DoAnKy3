@@ -2,6 +2,71 @@
     width: 18px;
 }
 
+#my-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    z-index: 9999;
+}
+
+#loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 1;
+    width: 120px;
+    height: 120px;
+    margin: -76px 0 0 -76px;
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-bottom {
+    position: relative;
+    animation-name: animatebottom;
+    animation-duration: 1s
+}
+
+@keyframes animatebottom {
+    from {
+        bottom: -100px;
+        opacity: 0
+    }
+
+    to {
+        bottom: 0;
+        opacity: 1
+    }
+}
+
 #alert-container {
     position: fixed;
     top: 80px;
@@ -13,18 +78,34 @@
     z-index: 999;
 }
 
-#alert-container .alert {
-    position: relative;
-    height: 40px;
-    font-size: small;
-    padding: 15px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    #alert-container .alert {
+        position: relative;
+        height: 40px;
+        font-size: small;
+        padding: 15px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        animation: removed 0.5s linear 3s 1 normal forwards;
+    }
+
+        #alert-container .alert * {
+            position: relative !important;
+            padding: 0px !important;
+        }
+
+@keyframes removed {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        display: none;
+    }
 }
 
-    #alert-container .alert * {
-        position: relative !important;
-        padding: 0px !important;
-    }
+.detail-card-redirect {
+    cursor: pointer;
+}

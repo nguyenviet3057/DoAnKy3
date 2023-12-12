@@ -64,34 +64,81 @@ namespace DoAnKy3.Controllers
         public ActionResult Validate()
         {
             string token = Request["access_token"];
-            var result = db.USERs.Where(o => o.USER_TOKEN == token).FirstOrDefault();
+
             var response = new ResponseModel();
-            if (result == null)
+            try
             {
-                response.status = ResponseModel.StatusCode.NotFound;
-                response.message = "Token not found!";
+                var result = db.USERs
+                .Join(db.EMPLOYEEs,
+                        usr => usr.USER_ID,
+                        emp => emp.EMP_NUM,
+                        (usr, emp) => new
+                        {
+                            emp.EMP_NUM,
+                            emp.EMP_NAME,
+                            emp.DEPT_CODE,
+                            usr.USER_TOKEN
+                        })
+                .Join(db.DEPARTMENTs,
+                        emp => emp.DEPT_CODE,
+                        dept => dept.DEPT_CODE,
+                        (emp, dept) => new
+                        {
+                            emp,
+                            dept.DEPT_NAME
+                        })
+                .Where(o => o.emp.USER_TOKEN == token)
+                .Select(o => new
+                {
+                    name = o.emp.EMP_NAME,
+                    department = o.DEPT_NAME
+                })
+                .FirstOrDefault();
+
+                if (result == null)
+                {
+                    response.status = ResponseModel.StatusCode.NotFound;
+                    response.message = "Token not found!";
+                    return Json(response);
+                }
+
+                response.status = ResponseModel.StatusCode.Success;
+                response.message = "Auto login success!";
+                response.data = JsonConvert.SerializeObject(result);
                 return Json(response);
             }
-
-            response.status = ResponseModel.StatusCode.Success;
-            response.message = "Auto login success!";
-            return Json(response);
+            catch (Exception ex)
+            {
+                response.status = ResponseModel.StatusCode.Error;
+                response.message = "Error";
+                return Json(response);
+            }
         }
 
         [HttpPost]
         public ActionResult Logout()
         {
             string token = Request["access_token"];
-            var result = db.USERs.Where(o => o.USER_TOKEN == token).FirstOrDefault();
-            if (result != null)
-            {
-                result.USER_TOKEN = null;
-                db.SubmitChanges();
-            }
+            
             var response = new ResponseModel();
-            response.status = ResponseModel.StatusCode.Success;
-            response.message = "Logout success!";
-            return Json(response);
+            try
+            {
+                var result = db.USERs.Where(o => o.USER_TOKEN == token).FirstOrDefault();
+                if (result != null)
+                {
+                    result.USER_TOKEN = null;
+                    db.SubmitChanges();
+                }
+                response.status = ResponseModel.StatusCode.Success;
+                response.message = "Logout success!";
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+                response.status = ResponseModel.StatusCode.Error;
+                response.message = "Error";
+                return Json(response);
+            }
         }
     }
 }

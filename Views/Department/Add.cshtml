@@ -1,0 +1,209 @@
+﻿
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="conatiner-fluid content-inner mt-n5 py-0">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
+                                <h4 class="me-2 h4">Add Department</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="submit border-0 bg-transparent h4 me-2 text-success">
+                                <i class="fa-solid fa-square-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card" id="about-info">
+                <div class="card-header d-flex flex-row justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title">About</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-inline m-0 p-0">
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="code" class="form-label text-black">Code:</label>
+                                <input type="text" name="code" class="form-control text-black" id="code" required>
+                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="name" class="form-label text-black">Name:</label>
+                                <input type="text" name="name" class="form-control text-black" id="name" required>
+                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="chairman" class="form-label text-black">Chairman</label>
+                                <select class="form-select" id="chairman" name="chairman" data-placeholder="Choose one person">
+                                    <option></option>
+                                </select>
+                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="email" class="form-label text-black">Email:</label>
+                                <input type="email" name="email" class="form-control text-black" id="email" required disabled>
+                                <div id="email-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="phone" class="form-label text-black">Phone:</label>
+                                <input type="tel" name="phone" class="form-control text-black" id="phone" required disabled>
+                                <div id="phone-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="address" class="form-label text-black">Location:</label>
+                                <input type="text" name="address" class="form-control text-black" id="address" required>
+                                <div id="address-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div id="projects-info" class="card">
+                <div class="card-header d-flex flex-row justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title">Projects</h4>
+                    </div>
+                    <div>
+                        <button class="add me-2 border-0 bg-transparent text-primary h4">
+                            <i class="fa-regular fa-square-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="twit-feed">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="media-support-info">
+                                <h6 class="mb-0">Figma Community</h6>
+                            </div>
+                        </div>
+                        <div class="media-support-body">
+                            <p class="mb-0">
+                                Lorem Ipsum is simply dummy text of the printing and typesetting
+                                industry
+                            </p>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="twit-feed">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="media-support-info">
+                                <h6 class="mb-0">Flutter</h6>
+                            </div>
+                        </div>
+                        <div class="media-support-body">
+                            <p class="mb-0">
+                                Lorem Ipsum is simply dummy text of the printing and typesetting
+                                industry
+                            </p>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            let emp_list = [];
+
+            $.ajax({
+                url: "/department/adddata",
+                data: null,
+                type: "POST",
+                success: function (result) {
+                    switch (result.status) {
+                        case StatusCode.Success:
+                            data = JSON.parse(result.data);
+                            console.log(data);
+
+                            emp_list = data;
+                            emp_list.forEach(function (item, index) {
+                                $("select#chairman").append('<option value="' + item.EMP_NUM + '">' + item.OPTION + '</option>')
+                            })
+                            $('#chairman').select2({
+                                theme: "bootstrap-5",
+                                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                                placeholder: $(this).data('placeholder')
+                            });
+                            $("#my-modal").fadeOut();
+                            break;
+                        default:
+                            AppendAlert("Get data failed!", StatusAlert.Error);
+                            break;
+                    }
+                }
+            })
+
+            $("select#chairman").change(function () {
+                emp_list.forEach(function (item, index) {
+                    if ($("option[value='" + item.EMP_NUM + "']").prop("selected")) {
+                        $("input#email").val(item.EMP_EMAIL);
+                        $("input#phone").val(item.EMP_PHONE);
+                    }
+                });
+            })
+
+            $("button.submit").click(function () {
+                let code = $("input#code").val();
+                let name = $("input#name").val();
+                let chairman = $("select#chairman").val();
+                let address = $("input#address").val();
+
+                let data = {
+                    code: code,
+                    name: name,
+                    chairman: chairman,
+                    address: address
+                }
+                $.ajax({
+                    url: "/department/addsubmit",
+                    data: data,
+                    type: "POST",
+                    success: function (result) {
+                        switch (result.status) {
+                            case StatusCode.Success:
+                                $("#code, #name, #chairman, #address").prop("disabled", true);
+                                AppendAlert("Add new department successfully!", StatusAlert.Success);
+                                setTimeout(() => window.location.pathname = "/department", 1500);
+                                break;
+                            case StatusCode.NotFound:
+                                AppendAlert("Code is already existed!", StatusAlert.Warning);
+                                break;
+                            default:
+                                AppendAlert("Error!", StatusAlert.Error);
+                                break;
+                        }
+                    }
+                })
+            })
+        })
+    </script>    
+}

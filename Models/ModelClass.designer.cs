@@ -70,7 +70,6 @@ namespace DoAnKy3.Models
     partial void UpdateTIME_KEEP(TIME_KEEP instance);
     partial void DeleteTIME_KEEP(TIME_KEEP instance);
         #endregion
-
         public ModelClassDataContext() :
 				base(ConfigurationManager.ConnectionStrings["QLNSConnectionString"].ConnectionString, mappingSource)
         {
@@ -640,7 +639,7 @@ namespace DoAnKy3.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEG_CODE", DbType="VarChar(5) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEG_CODE", DbType="VarChar(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
 		public string DEG_CODE
 		{
 			get
@@ -777,7 +776,7 @@ namespace DoAnKy3.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEG_CODE", DbType="VarChar(5) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEG_CODE", DbType="VarChar(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
 		public string DEG_CODE
 		{
 			get
@@ -957,7 +956,7 @@ namespace DoAnKy3.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEPT_CODE", DbType="VarChar(5) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEPT_CODE", DbType="VarChar(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
 		public string DEPT_CODE
 		{
 			get
@@ -1486,7 +1485,7 @@ namespace DoAnKy3.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEPT_CODE", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEPT_CODE", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
 		public string DEPT_CODE
 		{
 			get
@@ -1946,7 +1945,7 @@ namespace DoAnKy3.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PROJ_CODE", DbType="VarChar(5) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PROJ_CODE", DbType="VarChar(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
 		public string PROJ_CODE
 		{
 			get
@@ -2589,7 +2588,7 @@ namespace DoAnKy3.Models
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PROJ_CODE", DbType="VarChar(5) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PROJ_CODE", DbType="VarChar(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
 		public string PROJ_CODE
 		{
 			get
@@ -2788,6 +2787,8 @@ namespace DoAnKy3.Models
 		
 		private int _EMP_NUM;
 		
+		private string _PROJ_CODE;
+		
 		private double _PROJTSK_PROG;
 		
 		private string _PROJTSK_DOC;
@@ -2795,8 +2796,6 @@ namespace DoAnKy3.Models
 		private string _PROJTSK_IMG;
 		
 		private string _PROJTSK_DESC;
-		
-		private string _PROJ_CODE;
 		
 		private EntityRef<EMPLOYEE> _EMPLOYEE;
 		
@@ -2810,6 +2809,8 @@ namespace DoAnKy3.Models
     partial void OnPROJTSK_NUMChanged();
     partial void OnEMP_NUMChanging(int value);
     partial void OnEMP_NUMChanged();
+    partial void OnPROJ_CODEChanging(string value);
+    partial void OnPROJ_CODEChanged();
     partial void OnPROJTSK_PROGChanging(double value);
     partial void OnPROJTSK_PROGChanged();
     partial void OnPROJTSK_DOCChanging(string value);
@@ -2818,8 +2819,6 @@ namespace DoAnKy3.Models
     partial void OnPROJTSK_IMGChanged();
     partial void OnPROJTSK_DESCChanging(string value);
     partial void OnPROJTSK_DESCChanged();
-    partial void OnPROJ_CODEChanging(string value);
-    partial void OnPROJ_CODEChanged();
     #endregion
 		
 		public PROJECT_TASK()
@@ -2869,6 +2868,30 @@ namespace DoAnKy3.Models
 					this._EMP_NUM = value;
 					this.SendPropertyChanged("EMP_NUM");
 					this.OnEMP_NUMChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PROJ_CODE", DbType="VarChar(10) NOT NULL", CanBeNull=false, IsPrimaryKey=true)]
+		public string PROJ_CODE
+		{
+			get
+			{
+				return this._PROJ_CODE;
+			}
+			set
+			{
+				if ((this._PROJ_CODE != value))
+				{
+					if (this._PROJECT.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnPROJ_CODEChanging(value);
+					this.SendPropertyChanging();
+					this._PROJ_CODE = value;
+					this.SendPropertyChanged("PROJ_CODE");
+					this.OnPROJ_CODEChanged();
 				}
 			}
 		}
@@ -2949,30 +2972,6 @@ namespace DoAnKy3.Models
 					this._PROJTSK_DESC = value;
 					this.SendPropertyChanged("PROJTSK_DESC");
 					this.OnPROJTSK_DESCChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PROJ_CODE", DbType="VarChar(5) NOT NULL", CanBeNull=false)]
-		public string PROJ_CODE
-		{
-			get
-			{
-				return this._PROJ_CODE;
-			}
-			set
-			{
-				if ((this._PROJ_CODE != value))
-				{
-					if (this._PROJECT.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.OnPROJ_CODEChanging(value);
-					this.SendPropertyChanging();
-					this._PROJ_CODE = value;
-					this.SendPropertyChanged("PROJ_CODE");
-					this.OnPROJ_CODEChanged();
 				}
 			}
 		}
@@ -3281,7 +3280,7 @@ namespace DoAnKy3.Models
 		
 		private System.Nullable<System.TimeSpan> _TIME_CLK_OUT;
 		
-		private float _TIME_ABST;
+		private int _TIME_ABST;
 		
 		private EntityRef<EMPLOYEE> _EMPLOYEE;
 		
@@ -3299,7 +3298,7 @@ namespace DoAnKy3.Models
     partial void OnTIME_CLK_INChanged();
     partial void OnTIME_CLK_OUTChanging(System.Nullable<System.TimeSpan> value);
     partial void OnTIME_CLK_OUTChanged();
-    partial void OnTIME_ABSTChanging(float value);
+    partial void OnTIME_ABSTChanging(int value);
     partial void OnTIME_ABSTChanged();
     #endregion
 		
@@ -3413,8 +3412,8 @@ namespace DoAnKy3.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TIME_ABST", DbType="Real NOT NULL")]
-		public float TIME_ABST
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_TIME_ABST", DbType="Int NOT NULL")]
+		public int TIME_ABST
 		{
 			get
 			{

@@ -12,15 +12,20 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between">
                         <div class="d-flex flex-wrap align-items-center">
                             <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
-                                <h4 class="me-2 h4">Dep 1</h4>
-                                <span> - DPT01</span>
+                                <h4 class="me-2 h4 dept-name"></h4>
+                                <span>&nbsp;-&nbsp;</span><span class="dept-code"></span>
                             </div>
+                        </div>
+                        <div>
+                            <a role="button" href="" class="edit me-2 border-0 bg-transparent text-warning h4">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
                     <div class="header-title">
@@ -31,11 +36,28 @@
                     <ul class="list-inline m-0 p-0">
                         <li class="d-flex mb-2">
                             <p class="news-detail mb-0">
-                                there is a meetup in your city on fryday at 19:00. <a href="#">see details</a>
+                                Name: <span class="dept-name"></span>
                             </p>
                         </li>
-                        <li class="d-flex">
-                            <p class="news-detail mb-0">20% off coupon on selected items at pharmaprix </p>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Chairman: <span id="dept-chairman"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Email: <a href="mailto:nguyenviet3057@gmail.com" id="a-dept-email"><span id="dept-email"></span></a>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Phone: <a href="tel:0342192295" id="a-dept-phone"><span id="dept-phone"></span></a>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Location: <span id="dept-address"></span>
+                            </p>
                         </li>
                     </ul>
                 </div>
@@ -78,7 +100,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-9">
+        <div class="col-lg-8">
             <div class="card" data-aos="fade-up" data-aos-delay="900">
                 <div class="flex-wrap card-header d-flex justify-content-between">
                     <div class="header-title">
@@ -133,3 +155,45 @@
     </div>
 </div>
 
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dept_code = urlParams.get("deptcode");
+            let access_token = getCookie("access_token");
+            console.log(dept_code);
+            let data = {
+                dept_code: dept_code
+            };
+            console.log(data);
+            $.ajax({
+                url: "/department/detailsdata",
+                data: data,
+                type: "POST",
+                success: function (result) {
+                    switch (result.status) {
+                        case StatusCode.Success:
+                            data = JSON.parse(result.data);
+                            console.log(data);
+
+                            $(".dept-code").text(data.DEPT_CODE);
+                            $(".dept-name").text(data.DEPT_NAME);
+                            $("#dept-chairman").text(data.CHAIRMAN_NAME);
+                            $("#dept-email").text(data.CHAIRMAN_EMAIL);
+                            $("#a-dept-email").prop("href", "mailto:" + data.CHAIRMAN_EMAIL);
+                            $("#dept-phone").text(data.CHAIRMAN_PHONE);
+                            $("#a-dept-phone").prop("href", "tel:" + data.CHAIRMAN_PHONE);
+                            $("#dept-address").text(data.DEPT_ADDRESS);
+                            $("a.edit").prop("href", "/Department/Edit?deptcode=" + data.DEPT_CODE);
+                            $("#my-modal").fadeOut();
+                            break;
+                        default:
+                            AppendAlert("Get department data failed!", StatusAlert.Error);
+                            break;
+                    }
+                }
+            })
+        })
+    </script>    
+}
