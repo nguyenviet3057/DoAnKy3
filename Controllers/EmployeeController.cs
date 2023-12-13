@@ -232,38 +232,77 @@ namespace DoAnKy3.Controllers
             ResponseModel response = new ResponseModel();
             try
             {
-                string code = Request.Form["code"];
+                int emp_num = int.Parse(Request.Form["emp_num"]);
                 string name = Request.Form["name"];
-                int emp_num = int.Parse(Request.Form["chairman"]);
+                string gender = Request.Form["gender"];
+                string id = Request.Form["id"];
+                DateTime dob = DateTime.Parse(Request.Form["dob"]);
                 string address = Request.Form["address"];
-
-                if (code == "" || code == null ||
-                    name == "" || name == null ||
-                    emp_num == 0 ||
-                    address == "" || address == null)
-                {
-                    response.status = ResponseModel.StatusCode.Error;
-                    response.message = "Invalid value";
-                    return Json(response);
-                }
-
-                if (db.DEPARTMENTs.FirstOrDefault(o => o.DEPT_CODE.ToUpper().Equals(code.ToUpper())) != null)
+                string email = Request.Form["email"];
+                string phone = Request.Form["phone"];
+                string place_og = Request.Form["place_og"];
+                string religion = Request.Form["religion"];
+                string department = Request.Form["department"];
+                
+                if (db.EMPLOYEEs.FirstOrDefault(o => o.EMP_NUM == emp_num) != null)
                 {
                     response.status = ResponseModel.StatusCode.NotFound;
-                    response.message = "Code is existed";
+                    response.message = "Number is already existed!";
+                    return Json(response);
+                }
+                if (db.EMPLOYEEs.FirstOrDefault(o => o.EMP_ID == id) != null)
+                {
+                    response.status = ResponseModel.StatusCode.NotFound;
+                    response.message = "ID is already existed!";
+                    return Json(response);
+                }
+                if (db.EMPLOYEEs.FirstOrDefault(o => o.EMP_PHONE == phone) != null)
+                {
+                    response.status = ResponseModel.StatusCode.NotFound;
+                    response.message = "Phone number is already existed!";
+                    return Json(response);
+                }
+                if (db.EMPLOYEEs.FirstOrDefault(o => o.EMP_EMAIL == email) != null)
+                {
+                    response.status = ResponseModel.StatusCode.NotFound;
+                    response.message = "Email is already existed!";
                     return Json(response);
                 }
 
-                DEPARTMENT dept = new DEPARTMENT();
-                dept.DEPT_CODE = code;
-                dept.DEPT_NAME = name;
-                dept.EMP_NUM = emp_num;
-                dept.DEPT_ADDRESS = address;
-                db.DEPARTMENTs.InsertOnSubmit(dept);
+                EMPLOYEE new_emp = new EMPLOYEE();
+                new_emp.EMP_NUM = emp_num;
+                new_emp.EMP_NAME = name;
+                new_emp.EMP_GENDER = gender;
+                new_emp.EMP_ID = id;
+                new_emp.EMP_DOB = dob;
+                new_emp.EMP_ADDRESS = address;
+                new_emp.EMP_EMAIL = email;
+                new_emp.EMP_PHONE = phone;
+                new_emp.EMP_PLACE_OG = place_og;
+                new_emp.EMP_REL = religion;
+                new_emp.DEPT_CODE = department;
+                new_emp.EMP_NAT = "Vietnamese";
+                db.EMPLOYEEs.InsertOnSubmit(new_emp);
+
+                USER new_user = new USER();
+                new_user.USER_ID = emp_num;
+                new_user.USER_PSWD = id;
+                new_user.USER_POS = "EMPLOYEE";
+                new_user.USER_STATE = true;
+                db.USERs.InsertOnSubmit(new_user);
+
+                List<string> degrees = JsonConvert.DeserializeObject<List<string>>(Request.Form["degrees"]);
+                foreach (string deg in degrees)
+                {
+                    DEGREE_CONFIRM deg_cf = new DEGREE_CONFIRM();
+                    deg_cf.DEG_CODE = deg;
+                    deg_cf.EMP_NUM = emp_num;
+                    db.DEGREE_CONFIRMs.InsertOnSubmit(deg_cf);
+                }
                 db.SubmitChanges();
 
                 response.status = ResponseModel.StatusCode.Success;
-                response.message = "Add department successfully!";
+                response.message = "Add employee successfully!";
                 return Json(response);
             }
             catch
@@ -335,12 +374,21 @@ namespace DoAnKy3.Controllers
                         o.CONTR_NUM
                     })
                     .FirstOrDefault(o => o.EMP_NUM == emp_num);
+                var contracts = db.CONTRACTs
+                    .Select(o => new
+                    {
+                        o.EMP_NUM,
+                        o.CONTR_NUM
+                    })
+                    .Where(o => o.EMP_NUM == null || o.EMP_NUM == emp_num)
+                    .ToList();
 
                 data.employee = employee;
                 data.department = department;
                 data.degree_confirm = degree_confirm;
                 data.degrees = degrees;
                 data.contract = contract;
+                data.contracts = contracts;
 
                 response.status = ResponseModel.StatusCode.Success;
                 response.message = "Get department data successfully!";

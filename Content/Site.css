@@ -109,3 +109,8 @@
 .detail-card-redirect {
     cursor: pointer;
 }
+
+label.required:after {
+    content: " *";
+    color: red;
+}

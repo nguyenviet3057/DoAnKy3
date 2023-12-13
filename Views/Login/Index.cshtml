@@ -69,6 +69,11 @@
                 display: none;
             }
         }
+
+        label.required:after {
+            content: " *";
+            color: red;
+        }
     </style>
 
 </head>
@@ -124,14 +129,14 @@
                                         <div class="row">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label for="userid" class="form-label">ID</label>
-                                                    <input type="number" class="form-control" id="userid" aria-describedby="userid" placeholder="Enter your ID number">
+                                                    <label for="userid" class="form-label required">Number:</label>
+                                                    <input type="number" class="form-control" id="userid" aria-describedby="userid" placeholder="Enter your Number" required>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label for="password" class="form-label">Password</label>
-                                                    <input type="password" class="form-control" id="password" aria-describedby="password" placeholder="Enter your password">
+                                                    <label for="password" class="form-label required">Password:</label>
+                                                    <input type="password" class="form-control" id="password" aria-describedby="password" placeholder="Enter your password" required>
                                                 </div>
                                             </div>
                                             <div class="col-lg-12 d-flex justify-content-between">
@@ -228,6 +233,8 @@
         let alert_count = 0;
         let alert_close_btn = null;
         $("#submit-btn").click(function () {
+            if (!validate()) return;
+
             let formData = new FormData();
             formData.append("userid", $("#userid").val());
             formData.append("password", $("#password").val());

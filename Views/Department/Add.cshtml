@@ -35,46 +35,40 @@
                     <ul class="list-inline m-0 p-0">
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="code" class="form-label text-black">Code:</label>
+                                <label for="code" class="form-label text-black required">Code:</label>
                                 <input type="text" name="code" class="form-control text-black" id="code" required>
-                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="name" class="form-label text-black">Name:</label>
+                                <label for="name" class="form-label text-black required">Name:</label>
                                 <input type="text" name="name" class="form-control text-black" id="name" required>
-                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="chairman" class="form-label text-black">Chairman</label>
-                                <select class="form-select" id="chairman" name="chairman" data-placeholder="Choose one person">
+                                <label for="chairman" class="form-label text-black required">Chairman</label>
+                                <select class="form-select" id="chairman" name="chairman" data-placeholder="Choose one person" required>
                                     <option></option>
                                 </select>
-                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="email" class="form-label text-black">Email:</label>
+                                <label for="email" class="form-label text-blac requiredk">Email:</label>
                                 <input type="email" name="email" class="form-control text-black" id="email" required disabled>
-                                <div id="email-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="phone" class="form-label text-black">Phone:</label>
+                                <label for="phone" class="form-label text-black required">Phone:</label>
                                 <input type="tel" name="phone" class="form-control text-black" id="phone" required disabled>
-                                <div id="phone-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="address" class="form-label text-black">Location:</label>
+                                <label for="address" class="form-label text-black required">Location:</label>
                                 <input type="text" name="address" class="form-control text-black" id="address" required>
-                                <div id="address-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                     </ul>
@@ -172,6 +166,8 @@
             })
 
             $("button.submit").click(function () {
+                if (!validate()) return;
+
                 let code = $("input#code").val();
                 let name = $("input#name").val();
                 let chairman = $("select#chairman").val();

@@ -49,3 +49,16 @@ function AppendAlert(message, status) {
         }
     }
 }
+
+function validate() {
+    //console.log($("input:required, select:required"));
+    let isValid = true;
+    $("input:required, select:required").each(function () {
+        if (($(this).val() == null || $(this).val() == "") && isValid) {
+            AppendAlert("Please fill the required field(s)!", StatusAlert.Warning);
+            isValid = false;
+            return;
+        }
+    })
+    return isValid;
+}

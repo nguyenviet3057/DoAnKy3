@@ -39,43 +39,40 @@
                     <ul class="list-inline m-0 p-0">
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="code" class="form-label text-black">Code:</label>
-                                <input type="text" name="code" class="form-control text-black" id="code" value="" disabled>
+                                <label for="code" class="form-label text-black required">Code:</label>
+                                <input type="text" name="code" class="form-control text-black" id="code" value="" disabled required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="name" class="form-label text-black">Name:</label>
-                                <input type="text" name="name" class="form-control text-black" id="name" value="" disabled>
-                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
+                                <label for="name" class="form-label text-black required">Name:</label>
+                                <input type="text" name="name" class="form-control text-black" id="name" value="" disabled required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="chairman" class="form-label text-black">Chairman:</label>
-                                <select class="form-select" id="chairman" name="chairman" data-placeholder="Choose one person" disabled>
+                                <label for="chairman" class="form-label text-black required">Chairman:</label>
+                                <select class="form-select" id="chairman" name="chairman" data-placeholder="Choose one person" disabled required>
                                     <option></option>
                                 </select>
-                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="email" class="form-label text-black">Email:</label>
-                                <input type="email" name="email" class="form-control text-black" id="email" value="" disabled>
+                                <label for="email" class="form-label text-black required">Email:</label>
+                                <input type="email" name="email" class="form-control text-black" id="email" value="" disabled required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="phone" class="form-label text-black">Phone:</label>
-                                <input type="tel" name="phone" class="form-control text-black" id="phone" value="" disabled>
+                                <label for="phone" class="form-label text-black required">Phone:</label>
+                                <input type="tel" name="phone" class="form-control text-black" id="phone" value="" disabled required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="address" class="form-label text-black">Location:</label>
-                                <input type="text" name="address" class="form-control text-black" id="address" value="" disabled>
-                                <div id="address-help" class="form-text">We'll never share your email with anyone else.</div>
+                                <label for="address" class="form-label text-black required">Location:</label>
+                                <input type="text" name="address" class="form-control text-black" id="address" value="" disabled required>
                             </div>
                         </li>
                     </ul>
@@ -246,6 +243,8 @@
                 $("#name, #chairman, #address").prop("disabled", false);
             })
             $("#about-info .submit").click(function () {
+                if (!validate()) return;
+
                 dept_name = $("input#name").val();
 
                 let data = {
