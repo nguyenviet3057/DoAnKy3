@@ -355,7 +355,7 @@
                                          class="theme-color-pink-img img-fluid avatar avatar-50 avatar-rounded">
                                     <div class="caption ms-3 d-none d-md-block ">
                                         <h6 class="mb-0 caption-title" id="user-fullname"></h6>
-                                        <p class="mb-0 caption-sub-title" id="user-department"></p>
+                                        <p class="mb-0 caption-sub-title" id="user-position"></p>
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -761,33 +761,33 @@
     <script>
         $(document).ready(function () {
             let access_token = getCookie("access_token");
-            //if (access_token != "") {
-            //    $.ajax({
-            //        url: "/login/validate",
-            //        data: access_token,
-            //        processData: false,
-            //        contentType: false,
-            //        type: "POST",
-            //        success: function (result) {
-            //            switch (result.status) {
-            //                case StatusCode.Success:
-            //                    let data = JSON.parse(result.data);
-            //                    console.log(data);
+            if (access_token != "") {
+                $.ajax({
+                    url: "/login/validate",
+                    data: null,
+                    processData: false,
+                    contentType: false,
+                    type: "POST",
+                    success: function (result) {
+                        switch (result.status) {
+                            case StatusCode.Success:
+                                let data = JSON.parse(result.data);
+                                console.log(data);
 
-            //                    $("#user-fullname").text(data.name);
-            //                    $("#user-department").text(data.department);
-            //                    break;
-            //                default:
-            //                    setCookie("access_token", "", -1);
-            //                    window.location.pathname = "/login";
-            //                    break;
-            //            }
-            //        }
-            //    })
-            //} else {
-            //    setCookie("access_token", "", -1);
-            //    window.location.pathname = "/login";
-            //}
+                                $("#user-fullname").text(data.name);
+                                $("#user-position").text(data.position);
+                                break;
+                            default:
+                                setCookie("access_token", "", -1);
+                                window.location.pathname = "/login";
+                                break;
+                        }
+                    }
+                })
+            } else {
+                setCookie("access_token", "", -1);
+                window.location.pathname = "/login";
+            }
 
             let curPath = "/" + window.location.pathname.split("/")[1];
             $("div.sidebar-list li.nav-item a.nav-link.active:not(.static-item)").removeClass("active");

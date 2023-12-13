@@ -76,22 +76,14 @@ namespace DoAnKy3.Controllers
                         {
                             emp.EMP_NUM,
                             emp.EMP_NAME,
-                            emp.DEPT_CODE,
+                            usr.USER_POS,
                             usr.USER_TOKEN
                         })
-                .Join(db.DEPARTMENTs,
-                        emp => emp.DEPT_CODE,
-                        dept => dept.DEPT_CODE,
-                        (emp, dept) => new
-                        {
-                            emp,
-                            dept.DEPT_NAME
-                        })
-                .Where(o => o.emp.USER_TOKEN == token)
+                .Where(o => o.USER_TOKEN == token)
                 .Select(o => new
                 {
-                    name = o.emp.EMP_NAME,
-                    department = o.DEPT_NAME
+                    name = o.EMP_NAME,
+                    position = o.USER_POS
                 })
                 .FirstOrDefault();
 

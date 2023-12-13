@@ -2,7 +2,7 @@
   <Table Name="dbo.CONTRACT" Member="CONTRACTs">
     <Type Name="CONTRACT">
       <Column Name="CONTR_NUM" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="EMP_NUM" Type="System.Int32" DbType="Int" CanBeNull="true" />
       <Column Name="CONTR_SIGN_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="CONTR_END_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="CONTR_SAL_BASE" Type="System.Decimal" DbType="Money" CanBeNull="true" />
@@ -15,6 +15,7 @@
       <Column Name="USER_ID" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
       <Column Name="USER_PSWD" Type="System.String" DbType="VarChar(256) NOT NULL" CanBeNull="false" />
       <Column Name="USER_TOKEN" Type="System.String" DbType="VarChar(256)" CanBeNull="true" />
+      <Column Name="USER_POS" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
       <Column Name="USER_STATE" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Association Name="EMPLOYEE_USER" Member="EMPLOYEE" ThisKey="USER_ID" OtherKey="EMP_NUM" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
@@ -59,7 +60,6 @@
       <Column Name="EMP_EMAIL" Type="System.String" DbType="VarChar(30) NOT NULL" CanBeNull="false" />
       <Column Name="EMP_REL" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
       <Column Name="EMP_NAT" Type="System.String" DbType="VarChar(20) NOT NULL" CanBeNull="false" />
-      <Column Name="EMP_POS" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
       <Column Name="DEPT_CODE" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
       <Association Name="EMPLOYEE_CONTRACT" Member="CONTRACTs" ThisKey="EMP_NUM" OtherKey="EMP_NUM" Type="CONTRACT" />
       <Association Name="EMPLOYEE_USER" Member="USER" ThisKey="EMP_NUM" OtherKey="USER_ID" Type="USER" Cardinality="One" />
@@ -93,6 +93,7 @@
     <Type Name="FEEDBACK">
       <Column Name="FDBK_NUM" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="FDBK_DATE" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="DEPT_CODE" Type="System.String" DbType="VarChar(10) NOT NULL" CanBeNull="false" />
       <Column Name="EMP_NUM" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="FDBK_DESC" Type="System.String" DbType="NVarChar(200)" CanBeNull="true" />
       <Column Name="FDBK_SCALE" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />

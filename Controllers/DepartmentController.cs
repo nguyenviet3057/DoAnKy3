@@ -29,7 +29,7 @@ namespace DoAnKy3.Controllers
             {
                 var employee = db.EMPLOYEEs.FirstOrDefault(o => o.EMP_NUM.Equals(user.USER_ID));
 
-                switch (employee.EMP_POS)
+                switch (user.USER_POS)
                 {
                     case ADMIN:
                         data.departments = db.DEPARTMENTs.Select(o => new

@@ -1,6 +1,5 @@
-﻿
-@{
-    ViewBag.Title = "Edit";
+﻿@{
+    ViewBag.Title = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -12,15 +11,14 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between">
                         <div class="d-flex flex-wrap align-items-center">
                             <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
-                                <h4 class="me-2 h4 dept-name"></h4>
-                                <span>&nbsp;-&nbsp;</span><span class="dept-code"></span>
+                                <h4 class="me-2 h4">Add Employee</h4>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <div class="card" id="about-info">
                 <div class="card-header d-flex flex-row justify-content-between">
                     <div class="header-title">
@@ -39,7 +37,7 @@
                     <ul class="list-inline m-0 p-0">
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="code" class="form-label text-black">Code:</label>
+                                <label for="code" class="form-label text-black">Number:</label>
                                 <input type="text" name="code" class="form-control text-black" id="code" value="" disabled>
                             </div>
                         </li>
@@ -52,35 +50,96 @@
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="chairman" class="form-label text-black">Chairman:</label>
-                                <select class="form-select" id="chairman" name="chairman" data-placeholder="Choose one person" disabled>
-                                    <option></option>
+                                <label for="gender" class="form-label text-black">Gender:</label>
+                                <select class="form-select text-black" id="gender" name="gender" data-placeholder="Choose gender" disabled>
+                                    <option selected></option>
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
                                 </select>
-                                <div id="name-help" class="form-text">We'll never share your email with anyone else.</div>
+                                <div id="gender-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="email" class="form-label text-black">Email:</label>
-                                <input type="email" name="email" class="form-control text-black" id="email" value="" disabled>
+                                <label for="dob" class="form-label text-black">Date of birth:</label>
+                                <input type="date" name="dob" class="form-control text-black" id="dob" value="" disabled>
+                                <div id="dob-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="address" class="form-label text-black">Address:</label>
+                                <input type="text" name="address" class="form-control text-black" id="address" value="" disabled>
+                                <div id="address-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="id" class="form-label text-black">ID:</label>
+                                <input type="text" name="id" class="form-control text-black" id="id" value="" disabled>
+                                <div id="id-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="placeog" class="form-label text-black">Place of origin:</label>
+                                <input type="text" name="placeog" class="form-control text-black" id="placeog" value="" disabled>
+                                <div id="placeog-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="phone" class="form-label text-black">Phone:</label>
                                 <input type="tel" name="phone" class="form-control text-black" id="phone" value="" disabled>
+                                <div id="phone-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="address" class="form-label text-black">Location:</label>
-                                <input type="text" name="address" class="form-control text-black" id="address" value="" disabled>
-                                <div id="address-help" class="form-text">We'll never share your email with anyone else.</div>
+                                <label for="email" class="form-label text-black">Email:</label>
+                                <input type="email" name="email" class="form-control text-black" id="email" value="" disabled>
+                                <div id="email-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="religion" class="form-label text-black">Religion:</label>
+                                <input type="text" name="religion" class="form-control text-black" id="religion" value="" disabled>
+                                <div id="religion-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="department" class="form-label text-black">Department:</label>
+                                <select class="form-select" id="department" name="department" data-placeholder="Choose one department" disabled>
+                                    <option></option>
+                                </select>
+                                <div id="department-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="degrees" class="form-label text-black">Degree(s):</label>
+                                <select class="form-select" id="degrees" name="degrees" data-placeholder="Choose degree(s)" multiple disabled>
+                                    <option></option>
+                                </select>
+                                <div id="degrees-help" class="form-text">We'll never share your email with anyone else.</div>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="contract" class="form-label text-black">Contract:</label>
+                                <select class="form-select" id="contract" name="contract" data-placeholder="Choose one contract" disabled>
+                                    <option></option>
+                                </select>
+                                <div id="contract-help" class="form-text">We'll never share your email with anyone else.</div>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-6">
             <div id="projects-info" class="card">
                 <div class="card-header d-flex flex-row justify-content-between">
                     <div class="header-title">
@@ -130,58 +189,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-8">
-            <div class="card" data-aos="fade-up" data-aos-delay="900">
-                <div class="flex-wrap card-header d-flex justify-content-between">
-                    <div class="header-title">
-                        <h4 class="card-title">Average evaluation</h4>
-                    </div>
-                    <div class="dropdown me-5">
-                        <a href="#" class="text-gray dropdown-toggle" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            This Week
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end"
-                            aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="#">This Week</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="flex-wrap d-flex align-items-center justify-content-between">
-                        <div id="myChart" class="col-md-8 col-lg-8 myChart"></div>
-                        <div class="d-grid gap col-md-4 col-lg-4">
-                            <div class="d-flex align-items-start">
-                                <svg class="mt-2 icon-14" xmlns="http://www.w3.org/2000/svg" width="14"
-                                     viewBox="0 0 24 24" fill="#3a57e8">
-                                    <g>
-                                        <circle cx="12" cy="12" r="8" fill="#3a57e8"></circle>
-                                    </g>
-                                </svg>
-                                <div class="ms-3">
-                                    <span class="text-gray">Highest Dep</span>
-                                    <h6>76.0</h6>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-start">
-                                <svg class="mt-2 icon-14" xmlns="http://www.w3.org/2000/svg" width="14"
-                                     viewBox="0 0 24 24" fill="#4bc7d2">
-                                    <g>
-                                        <circle cx="12" cy="12" r="8" fill="#4bc7d2"></circle>
-                                    </g>
-                                </svg>
-                                <div class="ms-3">
-                                    <span class="text-gray">My Dep</span>
-                                    <h6>53.0</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -190,17 +197,13 @@
     <script>
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
-            const dept_code = urlParams.get("deptcode");
-
-            let emp_list = [];
-            let dept_name = null;
+            const emp_num = urlParams.get("empnum");
 
             let data = {
-                dept_code: dept_code
+                emp_num: emp_num
             };
-            console.log(data);
             $.ajax({
-                url: "/department/editdata",
+                url: "/employee/adddata",
                 data: data,
                 type: "POST",
                 success: function (result) {
@@ -209,27 +212,38 @@
                             data = JSON.parse(result.data);
                             console.log(data);
 
-                            let department = data.department;
-                            emp_list = data.emp_list;
+                            let departments = data.departments;
+                            let degrees = data.degrees;
+                            let contracts = data.contracts;
 
-                            $(".dept-code").text(department.DEPT_CODE)
-                            $(".dept-name").text(department.DEPT_NAME);
-
-                            $("input#code").val(department.DEPT_CODE);
-                            $("input#name").val(department.DEPT_NAME);
-
-                            emp_list.forEach(function (item, index) {
-                                $("select#chairman").append('<option value="' + item.EMP_NUM + '">' + item.OPTION + '</option>')
+                            departments.forEach(function (item, index) {
+                                $("select#department").append("<option value='" + item.DEPT_CODE + "'>" + item.DEPT_NAME + "</option>")
                             })
-                            $("select#chairman option[value='" + department.EMP_NUM + "']").prop("selected", true);
-                            $('#chairman').select2({
+                            $('select#department').select2({
                                 theme: "bootstrap-5",
                                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
                                 placeholder: $(this).data('placeholder')
                             });
-                            $("input#email").val(department.CHAIRMAN_EMAIL);
-                            $("input#phone").val(department.CHAIRMAN_PHONE);
-                            $("input#address").val(department.DEPT_ADDRESS);
+
+                            degrees.forEach(function (item, index) {
+                                $("select#degrees").append("<option value='" + item.DEG_CODE + "'>" + item.DEG_NAME + "</option>")
+                            })
+                            $('select#degrees').select2({
+                                theme: "bootstrap-5",
+                                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                                placeholder: $(this).data('placeholder'),
+                                closeOnSelect: false,
+                            });
+
+                            contracts.forEach(function (item, index) {
+                                $("select#contract").append("<option value='" + item.CONTR_NUM + "'>" + item.CONTR_NUM + "</option>")
+                            })
+                            $('select#contract').select2({
+                                theme: "bootstrap-5",
+                                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                                placeholder: $(this).data('placeholder')
+                            });
+
                             $("#my-modal").fadeOut();
                             break;
                         default:
@@ -243,32 +257,44 @@
             $("#about-info .edit").click(function () {
                 $("#about-info .edit, #projects-info .edit, #projects-info .add").removeClass("text-danger text-primary").addClass("text-light");
                 $("#about-info .submit").removeClass("text-light").addClass("text-success");
-                $("#name, #chairman, #address").prop("disabled", false);
+                $("#name, #gender, #dob, #address, #placeog, #religion, #department, #degrees").prop("disabled", false);
             })
             $("#about-info .submit").click(function () {
-                dept_name = $("input#name").val();
+                let name = $("input#name").val();
+                let gender = $("select#gender").val();
+                let dob = $("input#dob").val();
+                let address = $("input#address").val();
+                let place_og = $("input#placeog").val();
+                let religion = $("input#religion").val();
+                let department = $("select#department").val();
+                let degrees = $("select#degrees").val();
+                console.log(degrees);
 
                 let data = {
-                    code: dept_code,
-                    name: dept_name,
-                    chairman: $("select#chairman").val(),
-                    address: $("input#address").val()
+                    emp_num: emp_num,
+                    name: name,
+                    gender: gender,
+                    dob: dob,
+                    address: address,
+                    place_og: place_og,
+                    religion: religion,
+                    department: department,
+                    degrees: JSON.stringify(degrees)
                 }
                 console.log(data);
                 $.ajax({
-                    url: "/department/editsubmit",
+                    url: "/employee/editsubmit",
                     data: data,
                     type: "POST",
                     success: function (result) {
                         switch (result.status) {
                             case StatusCode.Success:
-                                $(".dept-code").text(dept_code);
-                                $(".dept-name").text(dept_name);
+                                $(".emp-name").text(name);
 
                                 $(this).removeClass("text-success").addClass("text-light");
                                 $("#about-info .edit, #projects-info .edit").removeClass("text-light").addClass("text-danger");
                                 $("#projects-info .add").removeClass("text-light").addClass("text-primary");
-                                $("#name, #chairman, #address").prop("disabled", true);
+                                $("#name, #gender, #dob, #address, #placeog, #religion, #department, #degrees").prop("disabled", true);
 
                                 AppendAlert("Update successfully!", StatusAlert.Success);
                                 break;
@@ -293,15 +319,6 @@
                 $(this).removeClass("text-success").addClass("text-light");
                 $("#about-info .edit, #projects-info .edit").removeClass("text-light").addClass("text-danger");
                 $("#projects-info .add").removeClass("text-light").addClass("text-primary");
-            })
-
-            $("select#chairman").change(function () {
-                emp_list.forEach(function (item, index) {
-                    if ($("option[value='" + item.EMP_NUM + "']").prop("selected")) {
-                        $("input#email").val(item.EMP_EMAIL);
-                        $("input#phone").val(item.EMP_PHONE);
-                    }
-                });
             })
         })
     </script>

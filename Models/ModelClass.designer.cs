@@ -213,7 +213,7 @@ namespace DoAnKy3.Models
 		
 		private int _CONTR_NUM;
 		
-		private int _EMP_NUM;
+		private System.Nullable<int> _EMP_NUM;
 		
 		private System.DateTime _CONTR_SIGN_DATE;
 		
@@ -231,7 +231,7 @@ namespace DoAnKy3.Models
     partial void OnCreated();
     partial void OnCONTR_NUMChanging(int value);
     partial void OnCONTR_NUMChanged();
-    partial void OnEMP_NUMChanging(int value);
+    partial void OnEMP_NUMChanging(System.Nullable<int> value);
     partial void OnEMP_NUMChanged();
     partial void OnCONTR_SIGN_DATEChanging(System.DateTime value);
     partial void OnCONTR_SIGN_DATEChanged();
@@ -268,8 +268,8 @@ namespace DoAnKy3.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EMP_NUM", DbType="Int NOT NULL")]
-		public int EMP_NUM
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EMP_NUM", DbType="Int")]
+		public System.Nullable<int> EMP_NUM
 		{
 			get
 			{
@@ -392,7 +392,7 @@ namespace DoAnKy3.Models
 					}
 					else
 					{
-						this._EMP_NUM = default(int);
+						this._EMP_NUM = default(Nullable<int>);
 					}
 					this.SendPropertyChanged("EMPLOYEE");
 				}
@@ -444,6 +444,8 @@ namespace DoAnKy3.Models
 		
 		private string _USER_TOKEN;
 		
+		private string _USER_POS;
+		
 		private bool _USER_STATE;
 		
 		private EntityRef<EMPLOYEE> _EMPLOYEE;
@@ -458,6 +460,8 @@ namespace DoAnKy3.Models
     partial void OnUSER_PSWDChanged();
     partial void OnUSER_TOKENChanging(string value);
     partial void OnUSER_TOKENChanged();
+    partial void OnUSER_POSChanging(string value);
+    partial void OnUSER_POSChanged();
     partial void OnUSER_STATEChanging(bool value);
     partial void OnUSER_STATEChanged();
     #endregion
@@ -528,6 +532,26 @@ namespace DoAnKy3.Models
 					this._USER_TOKEN = value;
 					this.SendPropertyChanged("USER_TOKEN");
 					this.OnUSER_TOKENChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_USER_POS", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
+		public string USER_POS
+		{
+			get
+			{
+				return this._USER_POS;
+			}
+			set
+			{
+				if ((this._USER_POS != value))
+				{
+					this.OnUSER_POSChanging(value);
+					this.SendPropertyChanging();
+					this._USER_POS = value;
+					this.SendPropertyChanged("USER_POS");
+					this.OnUSER_POSChanged();
 				}
 			}
 		}
@@ -1168,8 +1192,6 @@ namespace DoAnKy3.Models
 		
 		private string _EMP_NAT;
 		
-		private string _EMP_POS;
-		
 		private string _DEPT_CODE;
 		
 		private EntitySet<CONTRACT> _CONTRACTs;
@@ -1222,8 +1244,6 @@ namespace DoAnKy3.Models
     partial void OnEMP_RELChanged();
     partial void OnEMP_NATChanging(string value);
     partial void OnEMP_NATChanged();
-    partial void OnEMP_POSChanging(string value);
-    partial void OnEMP_POSChanged();
     partial void OnDEPT_CODEChanging(string value);
     partial void OnDEPT_CODEChanged();
     #endregion
@@ -1461,26 +1481,6 @@ namespace DoAnKy3.Models
 					this._EMP_NAT = value;
 					this.SendPropertyChanged("EMP_NAT");
 					this.OnEMP_NATChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_EMP_POS", DbType="NVarChar(20) NOT NULL", CanBeNull=false)]
-		public string EMP_POS
-		{
-			get
-			{
-				return this._EMP_POS;
-			}
-			set
-			{
-				if ((this._EMP_POS != value))
-				{
-					this.OnEMP_POSChanging(value);
-					this.SendPropertyChanging();
-					this._EMP_POS = value;
-					this.SendPropertyChanged("EMP_POS");
-					this.OnEMP_POSChanged();
 				}
 			}
 		}
@@ -2182,6 +2182,8 @@ namespace DoAnKy3.Models
 		
 		private System.DateTime _FDBK_DATE;
 		
+		private string _DEPT_CODE;
+		
 		private int _EMP_NUM;
 		
 		private string _FDBK_DESC;
@@ -2198,6 +2200,8 @@ namespace DoAnKy3.Models
     partial void OnFDBK_NUMChanged();
     partial void OnFDBK_DATEChanging(System.DateTime value);
     partial void OnFDBK_DATEChanged();
+    partial void OnDEPT_CODEChanging(string value);
+    partial void OnDEPT_CODEChanged();
     partial void OnEMP_NUMChanging(int value);
     partial void OnEMP_NUMChanged();
     partial void OnFDBK_DESCChanging(string value);
@@ -2248,6 +2252,26 @@ namespace DoAnKy3.Models
 					this._FDBK_DATE = value;
 					this.SendPropertyChanged("FDBK_DATE");
 					this.OnFDBK_DATEChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_DEPT_CODE", DbType="VarChar(10) NOT NULL", CanBeNull=false)]
+		public string DEPT_CODE
+		{
+			get
+			{
+				return this._DEPT_CODE;
+			}
+			set
+			{
+				if ((this._DEPT_CODE != value))
+				{
+					this.OnDEPT_CODEChanging(value);
+					this.SendPropertyChanging();
+					this._DEPT_CODE = value;
+					this.SendPropertyChanged("DEPT_CODE");
+					this.OnDEPT_CODEChanged();
 				}
 			}
 		}

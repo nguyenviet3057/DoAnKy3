@@ -46,12 +46,12 @@
                         </li>
                         <li class="d-flex mb-2">
                             <p class="news-detail mb-0">
-                                Email: <a href="mailto:nguyenviet3057@gmail.com" id="a-dept-email"><span id="dept-email"></span></a>
+                                Email: <a href="" id="a-dept-email"><span id="dept-email"></span></a>
                             </p>
                         </li>
                         <li class="d-flex mb-2">
                             <p class="news-detail mb-0">
-                                Phone: <a href="tel:0342192295" id="a-dept-phone"><span id="dept-phone"></span></a>
+                                Phone: <a href="" id="a-dept-phone"><span id="dept-phone"></span></a>
                             </p>
                         </li>
                         <li class="d-flex mb-2">
@@ -161,7 +161,6 @@
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
             const dept_code = urlParams.get("deptcode");
-            let access_token = getCookie("access_token");
             console.log(dept_code);
             let data = {
                 dept_code: dept_code
