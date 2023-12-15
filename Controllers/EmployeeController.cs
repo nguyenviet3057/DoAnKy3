@@ -54,7 +54,13 @@ namespace DoAnKy3.Controllers
                             .ToList();
                         break;
                     case MANAGER:
+                        var emp_team = db.PROJECT_TASKs
+                            .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
+                            .Select(o => o.EMP_NUM)
+                            .ToList();
+
                         data.emp_list = db.EMPLOYEEs
+                            .Where(o => emp_team.Contains(o.EMP_NUM))
                             .Join(db.CONTRACTs,
                                     emp => emp.EMP_NUM,
                                     contr => contr.EMP_NUM,
@@ -99,13 +105,22 @@ namespace DoAnKy3.Controllers
         public ActionResult DetailsData()
         {
             USER user = ValidateUser();
-            if (user == null) return Json(StatusUnauthorized());
+            if (user == null || user.USER_POS == "EMPLOYEE") return Json(StatusUnauthorized());
 
             ResponseModel response = new ResponseModel();
 
             try
             {
                 int emp_num = int.Parse(Request.Form["emp_num"]);
+                var emp_team = db.PROJECT_TASKs
+                            .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
+                            .Select(o => o.EMP_NUM)
+                            .ToList();
+                if (!emp_team.Contains(emp_num))
+                {
+                    return Json(StatusUnauthorized());
+                }
+
                 dynamic data = new ExpandoObject();
                 var employee = db.EMPLOYEEs
                     .Select(o => new
@@ -176,7 +191,7 @@ namespace DoAnKy3.Controllers
         public ActionResult AddData()
         {
             USER user = ValidateUser();
-            if (user == null) return Json(StatusUnauthorized());
+            if (user == null || user.USER_POS == "EMPLOYEE") return Json(StatusUnauthorized());
 
             ResponseModel response = new ResponseModel();
             dynamic data = new ExpandoObject();
@@ -227,7 +242,7 @@ namespace DoAnKy3.Controllers
         public ActionResult AddSubmit()
         {
             USER user = ValidateUser();
-            if (user == null) return Json(StatusUnauthorized());
+            if (user == null || user.USER_POS == "EMPLOYEE") return Json(StatusUnauthorized());
 
             ResponseModel response = new ResponseModel();
             try
@@ -321,12 +336,21 @@ namespace DoAnKy3.Controllers
         public ActionResult EditData()
         {
             USER user = ValidateUser();
-            if (user == null) return Json(StatusUnauthorized());
+            if (user == null || user.USER_POS == "EMPLOYEE") return Json(StatusUnauthorized());
 
             ResponseModel response = new ResponseModel();
             try
             {
                 int emp_num = int.Parse(Request.Form["emp_num"]);
+                var emp_team = db.PROJECT_TASKs
+                            .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
+                            .Select(o => o.EMP_NUM)
+                            .ToList();
+                if (!emp_team.Contains(emp_num))
+                {
+                    return Json(StatusUnauthorized());
+                }
+
                 dynamic data = new ExpandoObject();
                 var employee = db.EMPLOYEEs
                     .Select(o => new
@@ -407,12 +431,21 @@ namespace DoAnKy3.Controllers
         public ActionResult EditSubmit()
         {
             USER user = ValidateUser();
-            if (user == null) return Json(StatusUnauthorized());
+            if (user == null || user.USER_POS == "EMPLOYEE") return Json(StatusUnauthorized());
 
             ResponseModel response = new ResponseModel();
             try
             {
                 int emp_num = int.Parse(Request.Form["emp_num"]);
+                var emp_team = db.PROJECT_TASKs
+                            .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
+                            .Select(o => o.EMP_NUM)
+                            .ToList();
+                if (!emp_team.Contains(emp_num))
+                {
+                    return Json(StatusUnauthorized());
+                }
+
                 string name = Request.Form["name"];
                 string gender = Request.Form["gender"];
                 DateTime dob = DateTime.Parse(Request.Form["dob"]);
@@ -459,12 +492,21 @@ namespace DoAnKy3.Controllers
         public ActionResult DeleteSubmit()
         {
             USER user = ValidateUser();
-            if (user == null) return Json(StatusUnauthorized());
+            if (user == null || user.USER_POS == "EMPLOYEE") return Json(StatusUnauthorized());
 
             ResponseModel response = new ResponseModel();
             try
             {
                 int emp_num = int.Parse(Request.Form["emp_num"]);
+                var emp_team = db.PROJECT_TASKs
+                            .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
+                            .Select(o => o.EMP_NUM)
+                            .ToList();
+                if (!emp_team.Contains(emp_num))
+                {
+                    return Json(StatusUnauthorized());
+                }
+
                 var old_user = db.USERs.FirstOrDefault(o => o.USER_ID == emp_num);
                 old_user.USER_STATE = false;
 

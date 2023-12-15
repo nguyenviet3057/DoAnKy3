@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -12,15 +11,15 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-between">
                         <div class="d-flex flex-wrap align-items-center">
                             <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
-                                <h4 class="me-2 h4 dept-name"></h4>
-                                <span>&nbsp;-&nbsp;</span><span class="dept-code"></span>
+                                <h4 class="me-2 h4 proj-name"></h4>
+                                <span>&nbsp;-&nbsp;</span><span class="proj-code"></span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <div class="card" id="about-info">
                 <div class="card-header d-flex flex-row justify-content-between">
                     <div class="header-title">
@@ -51,8 +50,8 @@
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="chairman" class="form-label text-black required">Chairman:</label>
-                                <select class="form-select" id="chairman" name="chairman" data-placeholder="Choose one person" disabled required>
+                                <label for="leader" class="form-label text-black required">Leader:</label>
+                                <select class="form-select" id="leader" name="leader" data-placeholder="Choose one person" disabled required>
                                     <option></option>
                                 </select>
                             </div>
@@ -71,15 +70,13 @@
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
-                                <label for="address" class="form-label text-black required">Location:</label>
-                                <input type="text" name="address" class="form-control text-black" id="address" value="" disabled required>
+                                <label for="desc" class="form-label text-black required">Description:</label>
+                                <input type="text" name="desc" class="form-control text-black" id="desc" value="" disabled required>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
-        </div>
-        @*<div class="col-lg-6">
             <div id="projects-info" class="card">
                 <div class="card-header d-flex flex-row justify-content-between">
                     <div class="header-title">
@@ -128,7 +125,59 @@
                     <hr class="my-4">
                 </div>
             </div>
-        </div>*@
+        </div>
+        <div class="col-lg-8">
+            <div class="card" data-aos="fade-up" data-aos-delay="900">
+                <div class="flex-wrap card-header d-flex justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title">Average evaluation</h4>
+                    </div>
+                    <div class="dropdown me-5">
+                        <a href="#" class="text-gray dropdown-toggle" id="dropdownMenuButton1"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            This Week
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="dropdownMenuButton1">
+                            <li><a class="dropdown-item" href="#">This Week</a></li>
+                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="flex-wrap d-flex align-items-center justify-content-between">
+                        <div id="myChart" class="col-md-8 col-lg-8 myChart"></div>
+                        <div class="d-grid gap col-md-4 col-lg-4">
+                            <div class="d-flex align-items-start">
+                                <svg class="mt-2 icon-14" xmlns="http://www.w3.org/2000/svg" width="14"
+                                     viewBox="0 0 24 24" fill="#3a57e8">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="#3a57e8"></circle>
+                                    </g>
+                                </svg>
+                                <div class="ms-3">
+                                    <span class="text-gray">Highest Dep</span>
+                                    <h6>76.0</h6>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start">
+                                <svg class="mt-2 icon-14" xmlns="http://www.w3.org/2000/svg" width="14"
+                                     viewBox="0 0 24 24" fill="#4bc7d2">
+                                    <g>
+                                        <circle cx="12" cy="12" r="8" fill="#4bc7d2"></circle>
+                                    </g>
+                                </svg>
+                                <div class="ms-3">
+                                    <span class="text-gray">My Dep</span>
+                                    <h6>53.0</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -137,17 +186,17 @@
     <script>
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
-            const dept_code = urlParams.get("deptcode");
+            const proj_code = urlParams.get("projcode");
 
             let emp_list = [];
-            let dept_name = null;
+            let proj_name = null;
 
             let data = {
-                dept_code: dept_code
+                proj_code: proj_code
             };
             console.log(data);
             $.ajax({
-                url: "/department/editdata",
+                url: "/project/editdata",
                 data: data,
                 type: "POST",
                 success: function (result) {
@@ -156,31 +205,31 @@
                             data = JSON.parse(result.data);
                             console.log(data);
 
-                            let department = data.department;
+                            let project = data.project;
                             emp_list = data.emp_list;
 
-                            $(".dept-code").text(department.DEPT_CODE)
-                            $(".dept-name").text(department.DEPT_NAME);
+                            $(".proj-code").text(project.PROJ_CODE)
+                            $(".proj-name").text(project.PROJ_NAME);
 
-                            $("input#code").val(department.DEPT_CODE);
-                            $("input#name").val(department.DEPT_NAME);
+                            $("input#code").val(project.PROJ_CODE);
+                            $("input#name").val(project.PROJ_NAME);
 
                             emp_list.forEach(function (item, index) {
-                                $("select#chairman").append('<option value="' + item.EMP_NUM + '">' + item.OPTION + '</option>')
+                                $("select#leader").append('<option value="' + item.EMP_NUM + '">' + item.OPTION + '</option>')
                             })
-                            $("select#chairman option[value='" + department.EMP_NUM + "']").prop("selected", true);
-                            $('#chairman').select2({
+                            $("select#leader option[value='" + project.EMP_NUM + "']").prop("selected", true);
+                            $('#leader').select2({
                                 theme: "bootstrap-5",
                                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
                                 placeholder: $(this).data('placeholder')
                             });
-                            $("input#email").val(department.CHAIRMAN_EMAIL);
-                            $("input#phone").val(department.CHAIRMAN_PHONE);
-                            $("input#address").val(department.DEPT_ADDRESS);
+                            $("input#email").val(project.LEADER_EMAIL);
+                            $("input#phone").val(project.LEADER_PHONE);
+                            $("input#desc").val(project.PROJ_DESC);
                             $("#my-modal").fadeOut();
                             break;
                         default:
-                            AppendAlert("Get department data failed!", StatusAlert.Error);
+                            AppendAlert("Get project data failed!", StatusAlert.Error);
                             break;
                     }
                 }
@@ -190,34 +239,34 @@
             $("#about-info .edit").click(function () {
                 $("#about-info .edit, #projects-info .edit, #projects-info .add").removeClass("text-danger text-primary").addClass("text-light");
                 $("#about-info .submit").removeClass("text-light").addClass("text-success");
-                $("#name, #chairman, #address").prop("disabled", false);
+                $("#name, #leader, #desc").prop("disabled", false);
             })
             $("#about-info .submit").click(function () {
                 if (!validate()) return;
 
-                dept_name = $("input#name").val();
+                proj_name = $("input#name").val();
 
                 let data = {
-                    code: dept_code,
-                    name: dept_name,
-                    chairman: $("select#chairman").val(),
-                    address: $("input#address").val()
+                    code: proj_code,
+                    name: proj_name,
+                    leader: $("select#leader").val(),
+                    desc: $("input#desc").val()
                 }
                 console.log(data);
                 $.ajax({
-                    url: "/department/editsubmit",
+                    url: "/project/editsubmit",
                     data: data,
                     type: "POST",
                     success: function (result) {
                         switch (result.status) {
                             case StatusCode.Success:
-                                $(".dept-code").text(dept_code);
-                                $(".dept-name").text(dept_name);
+                                $(".proj-code").text(proj_code);
+                                $(".proj-name").text(proj_name);
 
                                 $(this).removeClass("text-success").addClass("text-light");
                                 $("#about-info .edit, #projects-info .edit").removeClass("text-light").addClass("text-danger");
                                 $("#projects-info .add").removeClass("text-light").addClass("text-primary");
-                                $("#name, #chairman, #address").prop("disabled", true);
+                                $("#name, #leader, #desc").prop("disabled", true);
 
                                 AppendAlert("Update successfully!", StatusAlert.Success);
                                 break;
@@ -244,7 +293,7 @@
                 $("#projects-info .add").removeClass("text-light").addClass("text-primary");
             })
 
-            $("select#chairman").change(function () {
+            $("select#leader").change(function () {
                 emp_list.forEach(function (item, index) {
                     if ($("option[value='" + item.EMP_NUM + "']").prop("selected")) {
                         $("input#email").val(item.EMP_EMAIL);

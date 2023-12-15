@@ -5,160 +5,89 @@
 }
 
 <div class="conatiner-fluid content-inner mt-n5 py-0">
-    <div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body d-flex justify-content-between align-items-center">
-                        <div class="card-title mb-0">
-                            <h4 class="mb-0">Calender</h4>
-                        </div>
-                        <div class="d-flex flex-row">
-                            <div class="card-action me-4">
-                                <a class="btn btn-primary" role="button">Manage</a>
-                            </div>
-                            <div class="card-action">
-                                <a class="btn btn-warning" id="checkin" role="button">Check-in</a>
-                            </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-end flex-wrap">
+                        <div class="d-flex align-items-center flex-wrap">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div id="calendar1" class="calendar-s"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="row" id="card-list">
         </div>
     </div>
 </div>
 
-<!-- Fullcalender CSS -->
-@section style
-{
-    <link rel='stylesheet' href='/Content/assets/vendor/fullcalendar/core/main.css' />
-    <link rel='stylesheet' href='/Content/assets/vendor/fullcalendar/daygrid/main.css' />
-    <link rel='stylesheet' href='/Content/assets/vendor/fullcalendar/timegrid/main.css' />
-    <link rel='stylesheet' href='/Content/assets/vendor/fullcalendar/list/main.css' />
-}
-
-<!-- Fullcalender Javascript -->
 @section script
 {
-    <script src='/Content/assets/vendor/fullcalendar/core/main.js'></script>
-    <script src='/Content/assets/vendor/fullcalendar/daygrid/main.js'></script>
-    <script src='/Content/assets/vendor/fullcalendar/timegrid/main.js'></script>
-    <script src='/Content/assets/vendor/fullcalendar/list/main.js'></script>
-    <script src='/Content/assets/vendor/fullcalendar/interaction/main.js'></script>
-    <script src='/Content/assets/vendor/moment.min.js'></script>
-    @*<script src='/Content/assets/js/plugins/calender.js'></script>*@
     <script>
         $(document).ready(function () {
-            let is_checked = false;
-            let events = [];
-            let today = new Date();
-
             $.ajax({
                 url: "/timekeeping/getdata",
                 data: null,
-                type: "POST",
+                method: "POST",
                 success: function (result) {
                     switch (result.status) {
                         case StatusCode.Success:
-                            let time_keeps = JSON.parse(result.data);
-                            console.log(time_keeps);
+                            data = JSON.parse(result.data);
+                            console.log(data);
 
+                            let time_keeps = data.time_keeps;
                             time_keeps.forEach(function (item, index) {
-                                let time_date = new Date(item.TIME_DATE);
-                                if (time_date.getDate() == today.getDate() && time_date.getMonth() == today.getMonth() && time_date.getFullYear() == today.getFullYear()) is_checked = true;
-                                let event = {
-                                    title: (item.TIME_ABST == 1) ? "Presented" : "Absent",
-                                    start: moment(item.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + item.TIME_CLK_IN + '.000Z',
-                                    textColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,1)" : "rgba(235,153,27,1)",
-                                    backgroundColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,0.2)" : "rgba(235,153,27,0.2)",
-                                    borderColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,1)" : "rgba(235,153,27,1)"
-                                }
-                                events.push(event);
+                                $("#card-list").append(
+                                '<div class="col-lg-4 col-md-6">' +
+                                    '<div class="card">' +
+                                        '<div class="card-body">' +
+                                            '<div class="d-grid grid-flow-col align-items-center justify-content-between mb-2">' +
+                                                '<div id="' + item.TIME_CODE + '" class="d-flex align-items-center detail-card-redirect">' +
+                                                    '<p class="mb-0">' + item.TIME_CODE + '</p>' +
+                                                '</div>' +
+                                                '<div class="dropdown">' +
+                                                    '<span class="h5" id="dropdownMenuButton11" role="button" data-bs-toggle="dropdown" aria-expanded="false">' +
+                                                        '<svg class="icon-24" xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" fill="none">' +
+                                                            '<g>' +
+                                                                '<g>' +
+                                                                    '<circle cx="7" cy="12" r="1" fill="black"></circle>' +
+                                                                    '<circle cx="12" cy="12" r="1" fill="black"></circle>' +
+                                                                    '<circle cx="17" cy="12" r="1" fill="black"></circle>' +
+                                                                '</g>' +
+                                                            '</g>' +
+                                                        '</svg>' +
+                                                    '</span>' +
+                                                    '<div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton11" style="">' +
+                                                        '<a class="dropdown-item" href="/TimeKeeping/Edit?timecode=' + item.TIME_CODE + '">' +
+                                                            '<svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2 icon-20">' +
+                                                                '<path d="M13.7476 20.4428H21.0002" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+                                                                '<path fill-rule="evenodd" clip-rule="evenodd" d="M12.78 3.79479C13.5557 2.86779 14.95 2.73186 15.8962 3.49173C15.9485 3.53296 17.6295 4.83879 17.6295 4.83879C18.669 5.46719 18.992 6.80311 18.3494 7.82259C18.3153 7.87718 8.81195 19.7645 8.81195 19.7645C8.49578 20.1589 8.01583 20.3918 7.50291 20.3973L3.86353 20.443L3.04353 16.9723C2.92866 16.4843 3.04353 15.9718 3.3597 15.5773L12.78 3.79479Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+                                                                '<path d="M11.021 6.00098L16.4732 10.1881" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>' +
+                                                            '</svg>' +
+                                                            'Edit' +
+                                                        '</a>' +
+                                                    '</div>' +
+                                                '</div>' +
+                                            '</div>' +
+                                            '<h6 id="' + item.TIME_CODE + '" class="mb-3 detail-card-redirect">' + item.EMP_NAME + '</h6>' +
+                                            '<div id="' + item.TIME_CODE + '" class="d-flex align-items-center mb-3 detail-card-redirect">' +
+                                                '<small>Date: ' + item.TIME_DATE + ' - ' + item.TIME_CLK_IN + '</small>' +
+                                            '</div>' +
+                                            '<div id="' + item.TIME_CODE + '" class="d-flex align-items-center mb-3 detail-card-redirect">' +
+                                                '<small>Status: ' + (item.TIME_ABST == 1? 'Presented' : 'Absent') + '</small>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</div>')
                             })
-
-                            if (is_checked) $("#checkin").removeClass("btn-warning").addClass("btn-success").text("Checked-in");
-
-                            console.log(events);
-                            drawCalendar(events);
-
                             $("#my-modal").fadeOut();
                             break;
                         default:
-                            AppendAlert("Get time keeping data failed!", StatusAlert.Error);
+                            AppendAlert("Get time keepings data failed!", StatusAlert.Error);
                             break;
                     }
                 }
             })
-
-            $("#checkin").click(function () {
-                $.ajax({
-                    url: "/timekeeping/checkin",
-                    data: null,
-                    type: "POST",
-                    success: function (result) {
-                        let data = JSON.parse(result.data);
-                        switch (result.status) {
-                            case StatusCode.Success:
-                                events.push({
-                                    title: "Presented",
-                                    start: moment(data.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + data.TIME_CLK_IN + '.000Z',
-                                    textColor: "rgba(8,130,12,1)",
-                                    backgroundColor: "rgba(8,130,12,0.2)",
-                                    borderColor: "rgba(8,130,12,1)"
-                                })
-
-                                $("#checkin").removeClass("btn-warning").addClass("btn-success").text("Checked-in");
-                                drawCalendar(events);
-                                AppendAlert("Check-in successfully!", StatusAlert.Success);
-                                break;
-                            default:
-                                AppendAlert("Check-in failed!", StatusAlert.Error);
-                                break;
-                        }
-                    }
-                })
-            })
         })
-
-        function drawCalendar(events = []) {
-            if (document.querySelectorAll('#calendar1').length) {
-                    let calendarEl = document.getElementById('calendar1');
-                    console.log(calendarEl)
-                    let calendar1 = new FullCalendar.Calendar(calendarEl, {
-                        selectable: true,
-                        plugins: ["timeGrid", "dayGrid", "list", "interaction"],
-                        timeZone: "Asia/Bangkok",
-                        defaultView: "dayGridMonth",
-                        contentHeight: "auto",
-                        eventLimit: true,
-                        dayMaxEvents: 4,
-                        header: {
-                            left: "prev,next today",
-                            center: "title",
-                            right: "dayGridMonth"
-                        },
-                        dateClick: function (info) {
-                            $('#schedule-start-date').val(info.dateStr)
-                            $('#schedule-end-date').val(info.dateStr)
-                            $('#date-event').modal('show')
-                        },
-                        events: events
-                    });
-                    calendar1.render();
-            }
-        }
     </script>
 }

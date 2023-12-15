@@ -22,12 +22,32 @@ namespace DoAnKy3.Controllers
             USER user = ValidateUser();
             if (user == null) return Json(StatusUnauthorized());
 
+            //Random rand = new Random();
+            //List<int> list = new List<int>()
+            //{
+            //    0, 25, 50, 100
+            //};
+            //var eval_list = db.EVALUATIONs.ToList();
+            //foreach (var item in eval_list)
+            //{
+            //    item.EVAL_HRDWRK = list[rand.Next(0, 4)];
+            //    item.EVAL_FRDLY = list[rand.Next(0, 4)];
+            //    item.EVAL_CRTV = list[rand.Next(0, 4)];
+            //}
+            //db.SubmitChanges();
+
             ResponseModel response = new ResponseModel();
             try
             {
                 dynamic data = new ExpandoObject();
                 data.rewarded_employee = null;
+
+                var proj_list = db.PROJECT_TASKs
+                    .Where(o => o.EMP_NUM == user.USER_ID)
+                    .Select(o => o.PROJ_CODE)
+                    .ToList();
                 data.progress_group = db.PROJECT_TASKs
+                    .Where(o => proj_list.Contains(o.PROJ_CODE))
                     .Join(db.PROJECTs,
                         project_task => project_task.PROJ_CODE,
                         project => project.PROJ_CODE,
@@ -35,8 +55,9 @@ namespace DoAnKy3.Controllers
                     .GroupBy(o => new { o.project.PROJ_CODE, o.project.PROJ_NAME })
                     .Select(o => new
                     {
+                        o.Key.PROJ_CODE,
                         o.Key.PROJ_NAME,
-                        AVG_PROG = o.Average(group => group.project_task.PROJTSK_PROG),
+                        AVG_PROG = o.Average(group => group.project_task.PROJTSK_PROG)
                     });
                 data.progress_self = db.PROJECT_TASKs
                     .Where(o => o.EMP_NUM == user.USER_ID)
@@ -44,13 +65,15 @@ namespace DoAnKy3.Controllers
                         project_task => project_task.PROJ_CODE,
                         project => project.PROJ_CODE,
                         (project_task, project) => new { project_task, project })
-                    .GroupBy(o => new { o.project.PROJ_CODE, o.project.PROJ_NAME })
+                    .GroupBy(o => new { o.project.EMP_NUM, o.project.PROJ_CODE, o.project.PROJ_NAME })
                     .Select(o => new
                     {
+                        o.Key.PROJ_CODE,
                         o.Key.PROJ_NAME,
-                        AVG_PROG = o.Average(group => group.project_task.PROJTSK_PROG),
+                        AVG_PROG = o.Average(group => group.project_task.PROJTSK_PROG)
                     });
                 data.evaluation_group = db.EVALUATIONs
+                    .Where(o => proj_list.Contains(o.PROJ_CODE))
                     .Join(db.PROJECTs,
                         evaluation => evaluation.PROJ_CODE,
                         project => project.PROJ_CODE,

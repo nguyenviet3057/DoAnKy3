@@ -60,5 +60,11 @@ function validate() {
             return;
         }
     })
+
+    if ($("input[type='date']").val() > new Date().toISOString().split('T')[0]) {
+        AppendAlert("Please fill with valid value(s)!", StatusAlert.Warning);
+        isValid = false;
+    }
+
     return isValid;
 }

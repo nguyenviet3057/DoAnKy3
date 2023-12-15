@@ -14,6 +14,8 @@ namespace DoAnKy3.Controllers
         // GET: TimeKeeping
         public ActionResult Index()
         {
+            USER user = ValidateUser();
+            if (user == null || user.USER_POS != "MANAGER") return Json(StatusUnauthorized());
             return View();
         }
 
@@ -21,12 +23,59 @@ namespace DoAnKy3.Controllers
         public ActionResult GetData()
         {
             USER user = ValidateUser();
+            if (user == null || user.USER_POS != "MANAGER") return Json(StatusUnauthorized());
+
+            ResponseModel response = new ResponseModel();
+            dynamic data = new ExpandoObject();
+            try
+            {
+                var emp_list = db.EMPLOYEEs
+                    .Where(o => o.DEPARTMENT.DEPT_CODE == user.EMPLOYEE.DEPT_CODE)
+                    .Select(o => o.EMP_NUM)
+                    .ToList();
+
+                data.time_keeps = db.TIME_KEEPs
+                    .Where(o => emp_list.Contains(o.EMP_NUM) && o.TIME_DATE == DateTime.Now)
+                    .Select(o => new
+                    {
+                        o.TIME_CODE,
+                        o.EMPLOYEE.EMP_NAME,
+                        TIME_DATE = o.TIME_DATE.Month + "/" + o.TIME_DATE.Day + "/" + o.TIME_DATE.Year,
+                        o.TIME_CLK_IN,
+                        o.TIME_ABST
+                    })
+                    .ToList();
+
+                response.status = ResponseModel.StatusCode.Success;
+                response.data = JsonConvert.SerializeObject(data);
+                response.message = "Get time keeping data successfully!";
+                return Json(response);
+            }
+            catch
+            {
+                response.status = ResponseModel.StatusCode.Error;
+                response.message = "Error";
+                return Json(response);
+            }
+        }
+
+        // GET: TimeKeeping/Checkin
+        public ActionResult Checkin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CheckinData()
+        {
+            USER user = ValidateUser();
             if (user == null) return Json(StatusUnauthorized());
 
             ResponseModel response = new ResponseModel();
+            dynamic data = new ExpandoObject();
             try
             {
-                var time_keeps = db.TIME_KEEPs
+                data.time_keeps = db.TIME_KEEPs
                     .Where(o => o.EMP_NUM == user.USER_ID)
                     .Select(o => new
                     {
@@ -36,9 +85,10 @@ namespace DoAnKy3.Controllers
                         o.TIME_ABST
                     })
                     .ToList();
+                data.position = user.USER_POS;
 
                 response.status = ResponseModel.StatusCode.Success;
-                response.data = JsonConvert.SerializeObject(time_keeps);
+                response.data = JsonConvert.SerializeObject(data);
                 response.message = "Get time keeping data successfully!";
                 return Json(response);
             }
@@ -51,7 +101,7 @@ namespace DoAnKy3.Controllers
         }
 
         [HttpPost]
-        public ActionResult Checkin()
+        public ActionResult CheckinSubmit()
         {
             USER user = ValidateUser();
             if (user == null) return Json(StatusUnauthorized());
@@ -88,75 +138,79 @@ namespace DoAnKy3.Controllers
             }
         }
 
-        // GET: TimeKeeping/Details/5
-        public ActionResult Details(int id)
+        // GET: TimeKeeping/Edit?timecode=
+        public ActionResult Edit()
         {
+            USER user = ValidateUser();
+            if (user == null || user.USER_POS != "MANAGER") return Json(StatusUnauthorized());
+
             return View();
         }
 
-        // GET: TimeKeeping/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: TimeKeeping/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult EditData()
         {
+            USER user = ValidateUser();
+            if (user == null || user.USER_POS != "MANAGER") return Json(StatusUnauthorized());
+
+            ResponseModel response = new ResponseModel();
+            dynamic data = new ExpandoObject();
             try
             {
-                // TODO: Add insert logic here
+                string time_code = Request.Form["time_code"];
+                data.time_keep = db.TIME_KEEPs
+                    .Where(o => o.TIME_CODE == time_code)
+                    .Select(o => new
+                    {
+                        TIME_DATE = o.TIME_DATE.Month + "/" + o.TIME_DATE.Day + "/" + o.TIME_DATE.Year,
+                        o.TIME_CLK_IN,
+                        o.TIME_ABST,
+                        o.EMP_NUM,
+                        o.EMPLOYEE.EMP_NAME
+                    })
+                    .FirstOrDefault();
 
-                return RedirectToAction("Index");
+                response.status = ResponseModel.StatusCode.Success;
+                response.data = JsonConvert.SerializeObject(data);
+                response.message = "Get data successfully!";
+                return Json(response);
             }
             catch
             {
-                return View();
+                response.status = ResponseModel.StatusCode.Error;
+                response.message = "Error";
+                return Json(response);
             }
         }
 
-        // GET: TimeKeeping/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: TimeKeeping/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult EditSubmit()
         {
+            USER user = ValidateUser();
+            if (user == null || user.USER_POS != "MANAGER") return Json(StatusUnauthorized());
+
+            ResponseModel response = new ResponseModel();
             try
             {
-                // TODO: Add update logic here
+                string time_code = Request.Form["time_code"];
+                DateTime date = DateTime.Parse(Request.Form["date"]);
+                TimeSpan clk_in = TimeSpan.Parse(Request.Form["clk_in"]);
+                int status = int.Parse(Request.Form["status"]);
 
-                return RedirectToAction("Index");
+                var old_time_keep = db.TIME_KEEPs.FirstOrDefault(o => o.TIME_CODE == time_code);
+                old_time_keep.TIME_CLK_IN = clk_in;
+                old_time_keep.TIME_ABST = status;
+                db.SubmitChanges();
+
+                response.status = ResponseModel.StatusCode.Success;
+                response.message = "Update successfully!";
+                return Json(response);
             }
             catch
             {
-                return View();
-            }
-        }
-
-        // GET: TimeKeeping/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: TimeKeeping/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
+                response.status = ResponseModel.StatusCode.Error;
+                response.message = "Error";
+                return Json(response);
             }
         }
     }

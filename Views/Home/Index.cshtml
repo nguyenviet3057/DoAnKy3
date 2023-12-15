@@ -149,7 +149,7 @@
         </div>
         <div class="col-md-12 col-lg-8">
             <div class="row">
-                <div class="col-md-12">
+                @*<div class="col-md-12">
                     <div class="card" data-aos="fade-up" data-aos-delay="800">
                         <div class="flex-wrap card-header d-flex justify-content-between align-items-center">
                             <div class="header-title">
@@ -197,7 +197,7 @@
                             <div id="d-main" class="d-main"></div>
                         </div>
                     </div>
-                </div>
+                </div>*@
                 <div class="col-md-12 col-xl-6">
                     <div class="card" data-aos="fade-up" data-aos-delay="900">
                         <div class="flex-wrap card-header d-flex justify-content-between">
@@ -225,8 +225,8 @@
                                             </g>
                                         </svg>
                                         <div class="ms-3">
-                                            <span class="text-gray">Average</span>
-                                            <h6 id="progress-group">0.0</h6>
+                                            <span class="text-gray">Self</span>
+                                            <h6 id="progress-self">0.0</h6>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-start">
@@ -237,8 +237,8 @@
                                             </g>
                                         </svg>
                                         <div class="ms-3">
-                                            <span class="text-gray">Self</span>
-                                            <h6 id="progress-self">0.0</h6>
+                                            <span class="text-gray">Team</span>
+                                            <h6 id="progress-group">0.0</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -253,20 +253,20 @@
                                 <h4 class="card-title">Evaluation</h4>
                             </div>
                             <div class="dropdown">
-                                <a href="#" class="text-gray dropdown-toggle" id="dropdownMenuButton3"
+                                <a href="#" class="text-gray dropdown-toggle" id="current-project-evaluation"
                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    This Week
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end"
-                                    aria-labelledby="dropdownMenuButton3">
-                                    <li><a class="dropdown-item" href="#">This Week</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                                    aria-labelledby="dropdownMenuButton3" id="list-project-evaluation">
                                 </ul>
                             </div>
                         </div>
                         <div class="card-body">
-                            <div id="d-activity" class="d-activity"></div>
+                            <div class="d-flex flex-column">
+                                <div class="border rounded ">
+                                    <div id="extrachart"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -330,7 +330,7 @@
                     switch (result.status) {
                         case StatusCode.Success:
                             data = JSON.parse(result.data);
-                            //console.log(data);
+                            console.log(data);
 
                             prog_group = data.progress_group;
                             prog_self = data.progress_self;
@@ -338,19 +338,33 @@
                             eval_self = data.evaluation_self;
                             time_keeping = data.time_keeping;
 
-                            $("#current-project-progress").text(prog_group[0].PROJ_NAME);
-                            prog_group.forEach(function (item, index) {
-                                $("#list-project-progress").append('<li><a class="dropdown-item" href="#">' + item.PROJ_NAME + '</a></li>')
-                            })
-                            //drawProgress(prog_group[0].AVG_PROG, prog_self[0].AVG_PROG);
+                            if (Array.isArray(prog_group) && prog_group.length > 0 &&
+                                Array.isArray(prog_self) && prog_self.length > 0 &&
+                                Array.isArray(eval_group) && eval_group.length > 0 &&
+                                Array.isArray(eval_self) && eval_self.length > 0) {
 
-                            //drawEvaluation([eval_group[0].AVG_EVAL_HW, eval_group[0].AVG_EVAL_FR, eval_group[0].AVG_EVAL_CR], [eval_self[0].AVG_EVAL_HW, eval_self[0].AVG_EVAL_FR, eval_self[0].AVG_EVAL_CR]);
+                                $("#current-project-progress").text(prog_group[0].PROJ_NAME);
+                                prog_group.forEach(function (item, index) {
+                                    $("#list-project-progress").append('<li><a class="dropdown-item select-prog" id="' + index + '" role="button">' + item.PROJ_NAME + '</a></li>')
+                                })
+                                drawProgress(prog_group[0].AVG_PROG, prog_self[0].AVG_PROG);
+
+                                $("#current-project-evaluation").text(prog_group[0].PROJ_NAME);
+                                eval_group.forEach(function (item, index) {
+                                    $("#list-project-evaluation").append('<li><a class="dropdown-item select-eval" id="' + index + '" role="button">' + item.PROJ_NAME + '</a></li>')
+                                })
+                                drawEvaluation([eval_group[0].AVG_EVAL_HW, eval_group[0].AVG_EVAL_FR, eval_group[0].AVG_EVAL_CR], [eval_self[0].AVG_EVAL_HW, eval_self[0].AVG_EVAL_FR, eval_self[0].AVG_EVAL_CR]);
+                            }
+                            else {
+                                drawProgress();
+                                drawEvaluation();
+                            }
 
                             $("#team-project").text(data.team_project ?? 0);
                             $("#total-employee").text(data.total_employee ?? 0);
 
                             let time_keeping_div = $("#time-keeping");
-                            if (Array.isArray(time_keeping)) {
+                            if (Array.isArray(time_keeping) && time_keeping.length > 0) {
                                 data.time_keeping.forEach(function (item, index) {
                                     let absent_status = item.absent_status ?? "Absent";
                                     let description = item.description ?? "Not permitted";
@@ -374,10 +388,24 @@
                 }
             })
 
+            $(document).on("click", "a.select-prog", function () {
+                let index = parseInt($(this).prop("id"));
+                $("#current-project-progress").text(prog_group[index].PROJ_NAME);
+                $("#myChart > div:first-child").remove();
+                drawProgress(prog_group[index] ? prog_group[index].AVG_PROG : 0, prog_self[index] ? prog_self[index].AVG_PROG : 0);
+            });
+
+            $(document).on("click", "a.select-eval", function () {
+                let index = parseInt($(this).prop("id"));
+                $("#current-project-evaluation").text(prog_group[index].PROJ_NAME);
+                $("#extrachart > div:first-child").remove();
+                drawEvaluation(eval_group[index] ? [eval_group[index].AVG_EVAL_HW, eval_group[index].AVG_EVAL_FR, eval_group[index].AVG_EVAL_CR] : [0, 0, 0], eval_self[index] ? [eval_self[index].AVG_EVAL_HW, eval_self[index].AVG_EVAL_FR, eval_self[index].AVG_EVAL_CR] : [0,0,0]);
+            });
+
             function drawProgress(progress_group = 0, progress_self = 0) {
                 if (document.querySelectorAll('#myChart').length) {
                     const options = {
-                        series: [progress_group , progress_self],
+                        series: [Math.round(progress_group * 100) / 100, Math.round(progress_self * 100) / 100],
                         chart: {
                             height: 230,
                             type: 'radialBar',
@@ -394,11 +422,11 @@
                                     strokeWidth: '50%',
                                 },
                                 dataLabels: {
-                                    show: false,
+                                    show: true,
                                 }
                             }
                         },
-                        labels: ['Apples', 'Oranges'],
+                        labels: ['Team', 'Self'],
                     };
                     if (ApexCharts !== undefined) {
                         const chart = new ApexCharts(document.querySelector("#myChart"), options);
@@ -410,74 +438,56 @@
                         })
                     }
 
-                    $("#progress-group").text(progress_group);
-                    $("#progress-self").text(progress_self);
+                    $("#progress-group").text(Math.round(progress_group * 100) / 100);
+                    $("#progress-self").text(Math.round(progress_self * 100) / 100);
                 }
 
             }
 
             function drawEvaluation(evaluation_group = [0, 0, 0], evaluation_self = [0, 0, 0]) {
-                if (document.querySelectorAll('#d-activity').length) {
+                if ($('#extrachart').length) {
                     const options = {
                         series: [{
-                            name: 'Average',
-                            data: eval_group
+                            name: 'Team',
+                            data: evaluation_group
                         }, {
                             name: 'Self',
                             data: evaluation_self
                         }],
                         chart: {
                             type: 'bar',
-                            height: 230,
-                            stacked: true,
-                            toolbar: {
-                                show: false
+                            height: 250,
+                            sparkline: {
+                                enabled: true
                             }
                         },
-                        colors: ["#3a57e8", "#4bc7d2"],
                         plotOptions: {
                             bar: {
                                 horizontal: false,
-                                columnWidth: '28%',
-                                endingShape: 'rounded',
+                                columnWidth: '25%',
                                 borderRadius: 5,
                             },
                         },
-                        legend: {
-                            show: false
-                        },
                         dataLabels: {
-                            enabled: false
+                            enabled: true
                         },
                         stroke: {
                             show: true,
                             width: 2,
+                            curve: 'smooth',
                             colors: ['transparent']
                         },
                         xaxis: {
                             categories: ['Hardwork', 'Friendly', 'Creative'],
-                            labels: {
-                                minHeight: 20,
-                                maxHeight: 24,
-                                style: {
-                                    colors: "#8A92A6",
-                                },
-                            }
                         },
                         yaxis: {
                             title: {
-                                text: ''
-                            },
-                            labels: {
-                                minWidth: 19,
-                                maxWidth: 19,
-                                style: {
-                                    colors: "#8A92A6",
-                                },
+                                text: 'Points'
                             }
                         },
                         fill: {
-                            opacity: 1
+                            opacity: 1,
+                            colors: ['#344ed1', '#b91d12', '#d48918']
                         },
                         tooltip: {
                             y: {
@@ -487,13 +497,8 @@
                             }
                         }
                     };
-
-                    const chart = new ApexCharts(document.querySelector("#d-activity"), options);
+                    const chart = new ApexCharts(document.querySelector("#extrachart"), options);
                     chart.render();
-                    document.addEventListener('ColorChange', (e) => {
-                        const newOpt = { colors: [e.detail.detail1, e.detail.detail2], }
-                        chart.updateOptions(newOpt)
-                    })
                 }
             }
         })

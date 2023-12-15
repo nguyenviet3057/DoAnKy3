@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="conatiner-fluid content-inner mt-n5 py-0">
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div class="card-title mb-0">
+                            <h4 class="mb-0">Calender</h4>
+                        </div>
+                        <div class="d-flex flex-row">
+                            <div class="card-action me-4">
+                                <a class="btn btn-primary" id="manage" href="/TimeKeeping">Manage</a>
+                            </div>
+                            <div class="card-action">
+                                <a class="btn btn-warning" id="checkin" role="button">Check-in</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div id="calendar1" class="calendar-s"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fullcalender CSS -->
+@section style
+{
+    <link rel='stylesheet' href='/Content/assets/vendor/fullcalendar/core/main.css' />
+    <link rel='stylesheet' href='/Content/assets/vendor/fullcalendar/daygrid/main.css' />
+    <link rel='stylesheet' href='/Content/assets/vendor/fullcalendar/timegrid/main.css' />
+    <link rel='stylesheet' href='/Content/assets/vendor/fullcalendar/list/main.css' />
+}
+
+<!-- Fullcalender Javascript -->
+@section script
+{
+    <script src='/Content/assets/vendor/fullcalendar/core/main.js'></script>
+    <script src='/Content/assets/vendor/fullcalendar/daygrid/main.js'></script>
+    <script src='/Content/assets/vendor/fullcalendar/timegrid/main.js'></script>
+    <script src='/Content/assets/vendor/fullcalendar/list/main.js'></script>
+    <script src='/Content/assets/vendor/fullcalendar/interaction/main.js'></script>
+    <script src='/Content/assets/vendor/moment.min.js'></script>
+    @*<script src='/Content/assets/js/plugins/calender.js'></script>*@
+    <script>
+        $(document).ready(function () {
+            let is_checked = false;
+            let events = [];
+            let today = new Date();
+
+            $.ajax({
+                url: "/timekeeping/checkindata",
+                data: null,
+                type: "POST",
+                success: function (result) {
+                    switch (result.status) {
+                        case StatusCode.Success:
+                            let data = JSON.parse(result.data);
+                            console.log(data);
+
+                            let time_keeps = data.time_keeps;
+                            let position = data.position;
+                            if (position != "MANAGER") $("#manage").remove();
+
+                            time_keeps.forEach(function (item, index) {
+                                let time_date = new Date(item.TIME_DATE);
+                                if (time_date.getDate() == today.getDate() && time_date.getMonth() == today.getMonth() && time_date.getFullYear() == today.getFullYear()) is_checked = true;
+                                let event = {
+                                    title: (item.TIME_ABST == 1) ? "Presented" : "Absent",
+                                    start: moment(item.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + item.TIME_CLK_IN + '.000Z',
+                                    textColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,1)" : "rgba(235,153,27,1)",
+                                    backgroundColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,0.2)" : "rgba(235,153,27,0.2)",
+                                    borderColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,1)" : "rgba(235,153,27,1)"
+                                }
+                                events.push(event);
+                            })
+
+                            if (is_checked) $("#checkin").removeClass("btn-warning").addClass("btn-success").text("Checked-in");
+
+                            console.log(events);
+                            drawCalendar(events);
+
+                            $("#my-modal").fadeOut();
+                            break;
+                        default:
+                            AppendAlert("Get time keeping data failed!", StatusAlert.Error);
+                            break;
+                    }
+                }
+            })
+
+            $("#checkin").click(function () {
+                $.ajax({
+                    url: "/timekeeping/checkinsubmit",
+                    data: null,
+                    type: "POST",
+                    success: function (result) {
+                        let data = JSON.parse(result.data);
+                        switch (result.status) {
+                            case StatusCode.Success:
+                                events.push({
+                                    title: "Presented",
+                                    start: moment(data.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + data.TIME_CLK_IN + '.000Z',
+                                    textColor: "rgba(8,130,12,1)",
+                                    backgroundColor: "rgba(8,130,12,0.2)",
+                                    borderColor: "rgba(8,130,12,1)"
+                                })
+
+                                $("#checkin").removeClass("btn-warning").addClass("btn-success").text("Checked-in");
+                                drawCalendar(events);
+                                AppendAlert("Check-in successfully!", StatusAlert.Success);
+                                break;
+                            default:
+                                AppendAlert("Check-in failed!", StatusAlert.Error);
+                                break;
+                        }
+                    }
+                })
+            })
+        })
+
+        function drawCalendar(events = []) {
+            if (document.querySelectorAll('#calendar1').length) {
+                    let calendarEl = document.getElementById('calendar1');
+                    console.log(calendarEl)
+                    let calendar1 = new FullCalendar.Calendar(calendarEl, {
+                        selectable: true,
+                        plugins: ["timeGrid", "dayGrid", "list", "interaction"],
+                        timeZone: "Asia/Bangkok",
+                        defaultView: "dayGridMonth",
+                        contentHeight: "auto",
+                        eventLimit: true,
+                        dayMaxEvents: 4,
+                        header: {
+                            left: "prev,next today",
+                            center: "title",
+                            right: "dayGridMonth"
+                        },
+                        dateClick: function (info) {
+                            $('#schedule-start-date').val(info.dateStr)
+                            $('#schedule-end-date').val(info.dateStr)
+                            $('#date-event').modal('show')
+                        },
+                        events: events
+                    });
+                    calendar1.render();
+            }
+        }
+    </script>
+}

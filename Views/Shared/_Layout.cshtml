@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Hope UI | Responsive Bootstrap 5 Admin Dashboard Template</title>
+    <title>Plan X Corporation</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="/Content/assets/images/favicon.ico" />
@@ -110,7 +110,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="@Url.Action("Index", "Home")">
+                        <a class="nav-link nav-home active" href="@Url.Action("Index", "Home")">
                             <i class="custom-fa-18 fa-solid fa-house"></i>
                             <span class="item-name">Dashboard</span>
                         </a>
@@ -124,57 +124,75 @@
                             <span class="mini-icon">-</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="nav-department">
                         <a class="nav-link " href="@Url.Action("Index", "Department")">
                             <i class="custom-fa-18 fa-solid fa-users-line"></i>
                             <span class="item-name">Department</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="nav-employee">
                         <a class="nav-link " href="@Url.Action("Index", "Employee")">
                             <i class="custom-fa-18 fa-solid fa-users"></i>
                             <span class="item-name">Employee</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="nav-project">
                         <a class="nav-link " href="@Url.Action("Index", "Project")">
                             <i class="custom-fa-18 fa-solid fa-list-check"></i>
                             <span class="item-name">Project</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    @*<li class="nav-item" id="nav-evaluation">
+                        <a class="nav-link " href="@Url.Action("Index", "Evaluation")">
+                            <i class="custom-fa-18 fa-solid fa-user-check" style="width: 16px;"></i>
+                            <span class="item-name">Evaluation</span>
+                        </a>
+                    </li>*@
+                    <li class="nav-item" id="nav-time-keeping">
+                        <a class="nav-link " href="@Url.Action("Checkin", "TimeKeeping")">
+                            <i class="custom-fa-18 fa-solid fa-clock"></i>
+                            <span class="item-name">Time Keeping</span>
+                        </a>
+                    </li>
+                    @*<li class="nav-item" id="nav-notification">
+                        <a class="nav-link " href="#">
+                            <i class="custom-fa-18 fa-solid fa-bell"></i>
+                            <span class="item-name">Notification</span>
+                        </a>
+                    </li>
+                    <li class="nav-item" id="nav-contract">
+                        <a class="nav-link " href="#">
+                            <i class="custom-fa-18 fa-solid fa-file-signature"></i>
+                            <span class="item-name">Contract</span>
+                        </a>
+                    </li>*@
+                    @*<li class="nav-item" id="nav-salary">
+                        <a class="nav-link " href="#">
+                            <i class="custom-fa-18 fa-solid fa-sack-dollar"></i>
+                            <span class="item-name">Salary</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="hr-horizontal">
+                    </li>*@
+                    @*<li class="nav-item static-item">
+                        <a class="nav-link static-item disabled" href="#" tabindex="-1">
+                            <span class="default-icon">Misc</span>
+                            <span class="mini-icon">-</span>
+                        </a>
+                    </li>*@
+                    @*<li class="nav-item">
                         <a class="nav-link " href="@Url.Action("Index", "Evaluation")">
                             <i class="custom-fa-18 fa-solid fa-user-check" style="width: 16px;"></i>
                             <span class="item-name">Evaluation</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="@Url.Action("Index", "TimeKeeping")">
-                            <i class="custom-fa-18 fa-solid fa-clock"></i>
-                            <span class="item-name">Time Keeping</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="hr-horizontal">
-                    </li>
-                    <li class="nav-item static-item">
-                        <a class="nav-link static-item disabled" href="#" tabindex="-1">
-                            <span class="default-icon">Misc</span>
-                            <span class="mini-icon">-</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link " href="#">
-                            <i class="custom-fa-18 fa-solid fa-file-signature"></i>
-                            <span class="item-name">Contract</span>
+                            <i class="custom-fa-18 fa-solid fa-award"></i>
+                            <span class="item-name">Recognition</span>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="#sidebar-widget">
-                            <i class="custom-fa-18 fa-solid fa-certificate"></i>
-                            <span class="item-name">Certificate</span>
-                        </a>
-                    </li>
+                    </li>*@
                 </ul>
                 <!-- Sidebar Menu End -->
             </div>
@@ -233,7 +251,7 @@
                             </svg>
                         </i>
                     </div>
-                    <div class="input-group search-input">
+                    @*<div class="input-group search-input">
                         <span class="input-group-text" id="search-input">
                             <svg class="icon-18" width="18" viewBox="0 0 24 24" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -244,8 +262,8 @@
                             </svg>
                         </span>
                         <input type="search" class="form-control" placeholder="Search...">
-                    </div>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    </div>*@
+                    @*<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon">
@@ -253,7 +271,7 @@
                             <span class="navbar-toggler-bar bar2"></span>
                             <span class="navbar-toggler-bar bar3"></span>
                         </span>
-                    </button>
+                    </button>*@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
                             @*<li class="nav-item dropdown">
@@ -261,7 +279,7 @@
                                         <img src="/Content/assets/images/Flag/flag002.png" class="rounded-circle" style="height: 30px; min-width: 30px; width: 30px;">
                                     </a>
                                 </li>*@
-                            <li class="nav-item dropdown">
+                            @*<li class="nav-item dropdown">
                                 <a href="#" class="nav-link" id="notification-drop" data-bs-toggle="dropdown">
                                     <svg class="icon-24" width="24" viewBox="0 0 24 24" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
@@ -339,7 +357,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </li>
+                            </li>*@
                             <li class="nav-item dropdown">
                                 <a class="py-0 nav-link d-flex align-items-center" href="#" id="navbarDropdown"
                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -362,11 +380,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <li>
-                                        <a class="dropdown-item" href="../dashboard/app/user-profile.html">Profile</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item"
-                                           href="../dashboard/app/user-privacy-setting.html">Privacy Setting</a>
+                                        <a class="dropdown-item" href="/User/Details">Profile</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider">
@@ -384,7 +398,7 @@
                         <div class="col-md-12">
                             <div class="flex-wrap d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h1>Hello Devs!</h1>
+                                    <h1 id="welcome-title">Hello Devs!</h1>
                                 </div>
                             </div>
                         </div>
@@ -733,7 +747,7 @@
     <script src="/Content/assets/js/core/external.min.js"></script>
 
     <!-- Widgetchart Script -->
-    <script src="/Content/assets/js/charts/widgetcharts.js"></script>
+    <!--<script src="/Content/assets/js/charts/widgetcharts.js"></script>-->
 
     <!-- mapchart Script -->
     <script src="/Content/assets/js/charts/vectore-chart.js"></script>
@@ -778,6 +792,15 @@
 
                                 $("#user-fullname").text(data.name);
                                 $("#user-position").text(data.position);
+                                switch (data.position) {
+                                    case "EMPLOYEE":
+                                        $("#nav-employee").remvove();
+                                    case "MANAGER":
+                                        $("<style>a[href='/Department/Add'], a[href='/Employee/Add'] { display: none !important; }</style>").appendTo("head")
+                                        break;
+                                }
+
+                                $("#welcome-title").text("Hello " + data.name.split(" ")[data.name.split(" ").length - 1] + "!");
                                 break;
                             default:
                                 setCookie("access_token", "", -1);
@@ -792,10 +815,15 @@
             }
 
             let curPath = "/" + window.location.pathname.split("/")[1];
+            console.log(curPath);
             $("div.sidebar-list li.nav-item a.nav-link.active:not(.static-item)").removeClass("active");
             $("div.sidebar-list li.nav-item a.nav-link:not(.static-item)").each(function (index, element) {
-                if ($(element).attr("href").toLowerCase() == curPath.toLowerCase()) $(this).addClass("active");
+                if (curPath != "/" && $(element).attr("href").toLowerCase().includes(curPath.toLowerCase())) $(this).addClass("active");
             })
+
+            if (curPath == "/" || curPath.toLowerCase() == "/home") {
+                $("a.nav-home").addClass("active");
+            }
         })
 
         $("#logout-btn").click(function () {

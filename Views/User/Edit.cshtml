@@ -28,10 +28,7 @@
                         <h4 class="card-title">About</h4>
                     </div>
                     <div>
-                        <button class="edit me-2 border-0 bg-transparent text-warning h4">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                        </button>
-                        <button class="submit border-0 bg-transparent h4 text-light">
+                        <button class="submit border-0 bg-transparent h4 text-success">
                             <i class="fa-regular fa-square-check"></i>
                         </button>
                     </div>
@@ -47,13 +44,13 @@
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="name" class="form-label text-black required">Name:</label>
-                                <input type="text" name="name" class="form-control text-black" id="name" value="" disabled required>
+                                <input type="text" name="name" class="form-control text-black" id="name" value="" required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="gender" class="form-label text-black required">Gender:</label>
-                                <select class="form-select text-black" id="gender" name="gender" data-placeholder="Choose gender" disabled required>
+                                <select class="form-select text-black" id="gender" name="gender" data-placeholder="Choose gender" required>
                                     <option selected></option>
                                     <option value="Nam">Nam</option>
                                     <option value="Nữ">Nữ</option>
@@ -63,13 +60,13 @@
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="dob" class="form-label text-black required">Date of birth:</label>
-                                <input type="date" name="dob" class="form-control text-black" id="dob" value="" disabled required>
+                                <input type="date" name="dob" class="form-control text-black" id="dob" value="" required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="address" class="form-label text-black required">Address:</label>
-                                <input type="text" name="address" class="form-control text-black" id="address" value="" disabled required>
+                                <input type="text" name="address" class="form-control text-black" id="address" value="" required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
@@ -81,25 +78,25 @@
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="placeog" class="form-label text-black required">Place of origin:</label>
-                                <input type="text" name="placeog" class="form-control text-black" id="placeog" value="" disabled required>
+                                <input type="text" name="placeog" class="form-control text-black" id="placeog" value="" required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="phone" class="form-label text-black required">Phone:</label>
-                                <input type="tel" name="phone" class="form-control text-black" id="phone" value="" disabled required>
+                                <input type="tel" name="phone" class="form-control text-black" id="phone" value="" required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="email" class="form-label text-black required">Email:</label>
-                                <input type="email" name="email" class="form-control text-black" id="email" value="" disabled required>
+                                <input type="email" name="email" class="form-control text-black" id="email" value="" required>
                             </div>
                         </li>
                         <li class="d-flex mb-2">
                             <div class="mb-3 w-100">
                                 <label for="religion" class="form-label text-black">Religion:</label>
-                                <input type="text" name="religion" class="form-control text-black" id="religion" value="" disabled>
+                                <input type="text" name="religion" class="form-control text-black" id="religion" value="">
                             </div>
                         </li>
                         <li class="d-flex mb-2">
@@ -130,56 +127,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
-            <div id="projects-info" class="card">
-                <div class="card-header d-flex flex-row justify-content-between">
-                    <div class="header-title">
-                        <h4 class="card-title">Projects</h4>
-                    </div>
-                    <div>
-                        <button class="edit me-2 border-0 bg-transparent text-warning h4">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                        </button>
-                        <button class="add me-2 border-0 bg-transparent text-primary h4">
-                            <i class="fa-regular fa-square-plus"></i>
-                        </button>
-                        <button class="submit border-0 bg-transparent h4 text-light">
-                            <i class="fa-regular fa-square-check"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="twit-feed">
-                        <div class="d-flex align-items-center mb-2">
-                            <div class="media-support-info">
-                                <h6 class="mb-0">Figma Community</h6>
-                            </div>
-                        </div>
-                        <div class="media-support-body">
-                            <p class="mb-0">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting
-                                industry
-                            </p>
-                        </div>
-                    </div>
-                    <hr class="my-4">
-                    <div class="twit-feed">
-                        <div class="d-flex align-items-center mb-2">
-                            <div class="media-support-info">
-                                <h6 class="mb-0">Flutter</h6>
-                            </div>
-                        </div>
-                        <div class="media-support-body">
-                            <p class="mb-0">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting
-                                industry
-                            </p>
-                        </div>
-                    </div>
-                    <hr class="my-4">
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -187,15 +134,9 @@
 {
     <script>
         $(document).ready(function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const emp_num = urlParams.get("empnum");
-
-            let data = {
-                emp_num: emp_num
-            };
             $.ajax({
-                url: "/employee/editdata",
-                data: data,
+                url: "/user/editdata",
+                data: null,
                 type: "POST",
                 success: function (result) {
                     switch (result.status) {
@@ -267,30 +208,24 @@
                             $("#my-modal").fadeOut();
                             break;
                         default:
-                            AppendAlert("Get employee data failed!", StatusAlert.Error);
+                            AppendAlert("Get user data failed!", StatusAlert.Error);
                             break;
                     }
                 }
             })
 
-            // About info
-            $("#about-info .edit").click(function () {
-                $("#about-info .edit, #projects-info .edit, #projects-info .add").removeClass("text-danger text-primary").addClass("text-light");
-                $("#about-info .submit").removeClass("text-light").addClass("text-success");
-                $("#name, #gender, #dob, #address, #placeog, #religion, #department, #degrees, #contract").prop("disabled", false);
-            })
             $("#about-info .submit").click(function () {
                 if (!validate()) return;
 
+                let emp_num = $("input#code").val();
                 let name = $("input#name").val();
                 let gender = $("select#gender").val();
                 let dob = $("input#dob").val();
                 let address = $("input#address").val();
                 let place_og = $("input#placeog").val();
                 let religion = $("input#religion").val();
-                let department = $("select#department").val();
-                let degrees = $("select#degrees").val();
-                console.log(degrees);
+                let email = $("input#email").val();
+                let phone = $("input#phone").val();
 
                 let data = {
                     emp_num: emp_num,
@@ -300,12 +235,12 @@
                     address: address,
                     place_og: place_og,
                     religion: religion,
-                    department: department,
-                    degrees: JSON.stringify(degrees)
+                    email: email,
+                    phone: phone
                 }
                 console.log(data);
                 $.ajax({
-                    url: "/employee/editsubmit",
+                    url: "/user/editsubmit",
                     data: data,
                     type: "POST",
                     success: function (result) {
@@ -319,6 +254,10 @@
                                 $("#name, #gender, #dob, #address, #placeog, #religion, #department, #degrees, #contract").prop("disabled", true);
 
                                 AppendAlert("Update successfully!", StatusAlert.Success);
+                                setTimeout(() => window.location.href = "/User/Details", 1500);
+                                break;
+                            case StatusCode.NotFound:
+                                AppendAlert("Email/Phone is already existed!", StatusAlert.Warning);
                                 break;
                             default:
                                 AppendAlert("Error!", StatusAlert.Error);
@@ -326,21 +265,6 @@
                         }
                     }
                 })
-            })
-
-            // Projects info
-            $("#projects-info .edit").click(function () {
-                $("#about-info .edit, #projects-info .edit, #projects-info .add").removeClass("text-danger text-primary").addClass("text-light");
-                $("#projects-info .submit").removeClass("text-light").addClass("text-success");
-            })
-            $("#projects-info .add").click(function () {
-                $("#about-info .edit, #projects-info .edit, #projects-info .add").removeClass("text-danger text-primary").addClass("text-light");
-                $("#projects-info .submit").removeClass("text-light").addClass("text-success");
-            })
-            $("#projects-info .submit").click(function () {
-                $(this).removeClass("text-success").addClass("text-light");
-                $("#about-info .edit, #projects-info .edit").removeClass("text-light").addClass("text-danger");
-                $("#projects-info .add").removeClass("text-light").addClass("text-primary");
             })
         })
     </script>

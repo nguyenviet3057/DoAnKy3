@@ -1,0 +1,164 @@
+﻿@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="conatiner-fluid content-inner mt-n5 py-0">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
+                                <h4 class="me-2 h4 emp-name"></h4>
+                                <span>&nbsp;-&nbsp;</span><span class="emp-code"></span>
+                            </div>
+                        </div>
+                        <div>
+                            <a role="button" href="/User/Edit" class="edit me-2 border-0 bg-transparent text-warning h4">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="header-title">
+                        <h4 class="card-title">About</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-inline m-0 p-0">
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Name: <span class="emp-name"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Gender: <span id="emp-gender"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Date of birth: <span id="emp-dob"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Address: <span id="emp-address"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                ID: <span id="emp-id"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Place of origin: <span id="emp-place-origin"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Phone: <a href="" id="a-emp-phone"><span id="emp-phone"></span></a>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Email: <a href="" id="a-emp-email"><span id="emp-email"></span></a>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Religion: <span id="emp-religion"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Position: <span id="emp-position"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Department: <span id="emp-department"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Degree: <span id="emp-degree"></span>
+                            </p>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <p class="news-detail mb-0">
+                                Current Contract: <span id="emp-contract"></span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const emp_num = urlParams.get("empnum");
+            let data = {
+                emp_num: emp_num
+            };
+            console.log(data);
+            $.ajax({
+                url: "/user/detailsdata",
+                data: data,
+                type: "POST",
+                success: function (result) {
+                    switch (result.status) {
+                        case StatusCode.Success:
+                            data = JSON.parse(result.data);
+                            console.log(data);
+
+                            let employee = data.employee;
+                            let department = data.department;
+                            let degrees = data.degrees;
+                            let contract = data.contract;
+
+                            $(".emp-code").text(employee.EMP_NUM);
+                            $(".emp-name").text(employee.EMP_NAME);
+                            $("#emp-gender").text(employee.EMP_GENDER);
+                            $("#emp-dob").text(employee.EMP_DOB);
+                            $("#emp-address").text(employee.EMP_ADDRESS);
+                            $("#emp-id").text(employee.EMP_ID);
+                            $("#emp-place-origin").text(employee.EMP_PLACE_OG);
+                            $("#emp-phone").text(employee.EMP_PHONE);
+                            $("#a-emp-phone").prop("href", "tel:" + employee.EMP_PHONE);
+                            $("#emp-email").text(employee.EMP_EMAIL);
+                            $("#a-emp-email").prop("href", "mailto:" + employee.EMP_EMAIL);
+                            $("#emp-religion").text((employee.EMP_REL == "" || employee.EMP_REL == null) ? "No" : employee.EMP_REL);
+                            $("#emp-position").text(employee.USER_POS);
+                            $("#emp-department").text(department.DEPT_NAME);
+                            let degree_list = "";
+                            degrees.forEach(function (item, index) {
+                                degree_list += item.DEG_NAME + ", "
+                            })
+                            $("#emp-degree").text(degree_list.slice(0, degree_list.length - 2));
+                            $("#emp-contract").text(contract.CONTR_NUM);
+
+                            $("#my-modal").fadeOut();
+                            break;
+                        default:
+                            AppendAlert("Get user data failed!", StatusAlert.Error);
+                            break;
+                    }
+                }
+            })
+        })
+    </script>
+}

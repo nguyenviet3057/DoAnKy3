@@ -1,0 +1,152 @@
+﻿
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="conatiner-fluid content-inner mt-n5 py-0">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
+                                <h4 class="me-2 h4 emp-name"></h4>
+                                <span>&nbsp;-&nbsp;</span><span class="emp-code"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card" id="about-info">
+                <div class="card-header d-flex flex-row justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title">About</h4>
+                    </div>
+                    <div>
+                        <button class="submit border-0 bg-transparent h4 text-success">
+                            <i class="fa-regular fa-square-check"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-inline m-0 p-0">
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-50">
+                                <label for="code" class="form-label text-black required">Code:</label>
+                                <input type="text" name="code" class="form-control text-black" id="code" value="" disabled required>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-50">
+                                <label for="date" class="form-label text-black required">Date:</label>
+                                <input type="date" name="date" class="form-control text-black" id="date" value="" required>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-50">
+                                <label for="clkin" class="form-label text-black required">Clock-in time:</label>
+                                <input type="time" name="clkin" class="form-control text-black" id="clkin" value="" required>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-25">
+                                <label for="status" class="form-label text-black required">Status:</label>
+                                <select class="form-select text-black" id="status" name="status" data-placeholder="Choose status" required>
+                                    <option selected></option>
+                                    <option value="1">Presented</option>
+                                    <option value="0">Absent</option>
+                                </select>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const time_code = urlParams.get("timecode");
+
+            let data = {
+                time_code: time_code
+            };
+            $.ajax({
+                url: "/timekeeping/editdata",
+                data: data,
+                type: "POST",
+                success: function (result) {
+                    switch (result.status) {
+                        case StatusCode.Success:
+                            data = JSON.parse(result.data);
+                            console.log(data);
+
+                            let time_keep = data.time_keep;
+
+                            $(".emp-name").text(time_keep.EMP_NAME);
+                            $(".emp-code").text(time_keep.EMP_NUM);
+
+                            $("#code").val(time_code);
+                            let month = time_keep.TIME_DATE.split("/")[0];
+                            let day = time_keep.TIME_DATE.split("/")[1];
+                            let year = time_keep.TIME_DATE.split("/")[2];
+                            let time_date = year + "-" + (month.length == 1 ? '0' + month : month) + "-" + (day.length == 1 ? '0' + day : day);
+                            $("#date").val(time_date);
+                            $("#clkin").val(time_keep.TIME_CLK_IN);
+                            $("#status").val(time_keep.TIME_ABST);
+
+                            $("#my-modal").fadeOut();
+                            break;
+                        default:
+                            AppendAlert("Get time keeping data failed!", StatusAlert.Error);
+                            break;
+                    }
+                }
+            })
+
+            $("#about-info .submit").click(function () {
+                if (!validate()) return;
+
+                let time_code = $("input#code").val();
+                let date = $("input#date").val();
+                let clk_in = $("input#clkin").val();
+                let status = $("select#status").val();
+
+                let data = {
+                    time_code: time_code,
+                    date: date,
+                    clk_in: clk_in,
+                    status: status
+                }
+                console.log(data);
+                $.ajax({
+                    url: "/timekeeping/editsubmit",
+                    data: data,
+                    type: "POST",
+                    success: function (result) {
+                        switch (result.status) {
+                            case StatusCode.Success:
+                                $("#date, #clkin, #status").prop("disabled", true);
+
+                                AppendAlert("Update time keeping successfully!", StatusAlert.Success);
+                                setTimeout(() => window.location.href = '/timekeeping', 1500);
+                                break;
+                            default:
+                                AppendAlert("Error!", StatusAlert.Error);
+                                break;
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+}
