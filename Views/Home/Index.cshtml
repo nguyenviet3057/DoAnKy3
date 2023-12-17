@@ -338,10 +338,10 @@
                             eval_self = data.evaluation_self;
                             time_keeping = data.time_keeping;
 
-                            if (Array.isArray(prog_group) && prog_group.length > 0 &&
-                                Array.isArray(prog_self) && prog_self.length > 0 &&
-                                Array.isArray(eval_group) && eval_group.length > 0 &&
-                                Array.isArray(eval_self) && eval_self.length > 0) {
+                            if ((Array.isArray(prog_group) && prog_group.length > 0 &&
+                                Array.isArray(prog_self) && prog_self.length > 0) ||
+                                (Array.isArray(eval_group) && eval_group.length > 0 &&
+                                Array.isArray(eval_self) && eval_self.length > 0)) {
 
                                 $("#current-project-progress").text(prog_group[0].PROJ_NAME);
                                 prog_group.forEach(function (item, index) {
@@ -353,7 +353,7 @@
                                 eval_group.forEach(function (item, index) {
                                     $("#list-project-evaluation").append('<li><a class="dropdown-item select-eval" id="' + index + '" role="button">' + item.PROJ_NAME + '</a></li>')
                                 })
-                                drawEvaluation([eval_group[0].AVG_EVAL_HW, eval_group[0].AVG_EVAL_FR, eval_group[0].AVG_EVAL_CR], [eval_self[0].AVG_EVAL_HW, eval_self[0].AVG_EVAL_FR, eval_self[0].AVG_EVAL_CR]);
+                                drawEvaluation(eval_group.length > 0 ? [eval_group[0].AVG_EVAL_HW, eval_group[0].AVG_EVAL_FR, eval_group[0].AVG_EVAL_CR] : [0, 0, 0], eval_self.length > 0 ? [eval_self[0].AVG_EVAL_HW, eval_self[0].AVG_EVAL_FR, eval_self[0].AVG_EVAL_CR] : [0, 0, 0]);
                             }
                             else {
                                 drawProgress();
@@ -399,13 +399,13 @@
                 let index = parseInt($(this).prop("id"));
                 $("#current-project-evaluation").text(prog_group[index].PROJ_NAME);
                 $("#extrachart > div:first-child").remove();
-                drawEvaluation(eval_group[index] ? [eval_group[index].AVG_EVAL_HW, eval_group[index].AVG_EVAL_FR, eval_group[index].AVG_EVAL_CR] : [0, 0, 0], eval_self[index] ? [eval_self[index].AVG_EVAL_HW, eval_self[index].AVG_EVAL_FR, eval_self[index].AVG_EVAL_CR] : [0,0,0]);
+                drawEvaluation(eval_group.length > 0 ? [eval_group[index].AVG_EVAL_HW, eval_group[index].AVG_EVAL_FR, eval_group[index].AVG_EVAL_CR] : [0, 0, 0], eval_self.length > 0 ? [eval_self[index].AVG_EVAL_HW, eval_self[index].AVG_EVAL_FR, eval_self[index].AVG_EVAL_CR] : [0, 0, 0]);
             });
 
             function drawProgress(progress_group = 0, progress_self = 0) {
                 if (document.querySelectorAll('#myChart').length) {
                     const options = {
-                        series: [Math.round(progress_group * 100) / 100, Math.round(progress_self * 100) / 100],
+                        series: [Math.round(progress_group ?? 0 * 100) / 100, Math.round(progress_self ?? 0 * 100) / 100],
                         chart: {
                             height: 230,
                             type: 'radialBar',

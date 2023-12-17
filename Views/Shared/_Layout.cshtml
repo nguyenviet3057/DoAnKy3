@@ -794,7 +794,7 @@
                                 $("#user-position").text(data.position);
                                 switch (data.position) {
                                     case "EMPLOYEE":
-                                        $("#nav-employee").remvove();
+                                        if ($("#nav-employee")) $("#nav-employee").remove();
                                     case "MANAGER":
                                         $("<style>a[href='/Department/Add'], a[href='/Employee/Add'] { display: none !important; }</style>").appendTo("head")
                                         break;
