@@ -116,7 +116,7 @@ namespace DoAnKy3.Controllers
                             .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
                             .Select(o => o.EMP_NUM)
                             .ToList();
-                if (!emp_team.Contains(emp_num))
+                if (!emp_team.Contains(emp_num) && user.USER_POS == MANAGER)
                 {
                     return Json(StatusUnauthorized());
                 }
@@ -336,7 +336,7 @@ namespace DoAnKy3.Controllers
         public ActionResult EditData()
         {
             USER user = ValidateUser();
-            if (user == null || user.USER_POS == "EMPLOYEE") return Json(StatusUnauthorized());
+            if (user == null || user.USER_POS == EMPLOYEE) return Json(StatusUnauthorized());
 
             ResponseModel response = new ResponseModel();
             try
@@ -346,7 +346,7 @@ namespace DoAnKy3.Controllers
                             .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
                             .Select(o => o.EMP_NUM)
                             .ToList();
-                if (!emp_team.Contains(emp_num))
+                if (!emp_team.Contains(emp_num) && user.USER_POS == MANAGER)
                 {
                     return Json(StatusUnauthorized());
                 }
@@ -441,7 +441,7 @@ namespace DoAnKy3.Controllers
                             .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
                             .Select(o => o.EMP_NUM)
                             .ToList();
-                if (!emp_team.Contains(emp_num))
+                if (!emp_team.Contains(emp_num) && user.USER_POS == MANAGER)
                 {
                     return Json(StatusUnauthorized());
                 }
@@ -502,7 +502,7 @@ namespace DoAnKy3.Controllers
                             .Where(o => o.PROJECT.EMP_NUM == user.USER_ID)
                             .Select(o => o.EMP_NUM)
                             .ToList();
-                if (!emp_team.Contains(emp_num))
+                if (!emp_team.Contains(emp_num) || user.USER_POS == MANAGER)
                 {
                     return Json(StatusUnauthorized());
                 }

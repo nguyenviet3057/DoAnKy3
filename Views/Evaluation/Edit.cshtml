@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="conatiner-fluid content-inner mt-n5 py-0">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between">
+                        <div class="d-flex flex-wrap align-items-center">
+                            <div class="d-flex flex-wrap align-items-center mb-3 mb-sm-0">
+                                <h4 class="me-2 h4 emp-name"></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card" id="about-info">
+                <div class="card-header d-flex flex-row justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title"></h4>
+                    </div>
+                    <div>
+                        <button class="submit border-0 bg-transparent h4 text-light">
+                            <i class="fa-regular fa-square-check"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-inline m-0 p-0">
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="eval-hardwork" class="form-label text-black required">Hardwork:</label>
+                                <select class="form-select" name="evalhw" id="eval-hardwork" required>
+                                    <option>25</option>
+                                    <option>50</option>
+                                    <option>75</option>
+                                    <option>100</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="eval-friendly" class="form-label text-black required">Friendly:</label>
+                                <select class="form-select" name="evalfr" id="eval-friendly" required>
+                                    <option>25</option>
+                                    <option>50</option>
+                                    <option>75</option>
+                                    <option>100</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="eval-creative" class="form-label text-black required">Creative:</label>
+                                <select class="form-select" name="evalcr" id="eval-creative" required>
+                                    <option>25</option>
+                                    <option>50</option>
+                                    <option>75</option>
+                                    <option>100</option>
+                                </select>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-2">
+                            <div class="mb-3 w-100">
+                                <label for="eval-cmt" class="form-label text-black required">Phone:</label>
+                                <input type="text" name="evalcmt" class="form-control text-black" id="eval-cmt" value="" required>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section script
+{
+    <script>
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eval_num = urlParams.get("evalnum");
+            const emp_num = urlParams.get("empnum");
+            const proj_code = urlParams.get("projcode");
+
+            let data = {
+                eval_num: eval_num,
+                emp_num: emp_num,
+                proj_code: proj_code
+            };
+            $.ajax({
+                url: "/evaluation/editdata",
+                data: data,
+                type: "POST",
+                success: function (result) {
+                    switch (result.status) {
+                        case StatusCode.Success:
+                            data = JSON.parse(result.data);
+                            console.log(data);
+
+                            $(".emp-name").text("Evaluate: " + data.EVAL_NUM + " - " + data.EMP_NAME);
+                            eval_num = data.EVAL_NUM;
+                            emp_num = data.EMP_NUM;
+                            proj_code = data.PROJ_CODE;
+
+                            $("input#evalhw").val(data.EVAL_HRDWRK);
+                            $("input#evalfr").val(data.EVAL_FRDLY);
+                            $("input#evalcr").val(data.EVAL_CRTV);
+                            $("input#evalcmt").val(data.EVAL_CMT);
+                            $("#my-modal").fadeOut();
+                            break;
+                        default:
+                            AppendAlert("Get evaluation data failed!", StatusAlert.Error);
+                            break;
+                    }
+                }
+            })
+
+            $("#about-info .submit").click(function () {
+                if (!validate()) return;
+
+                emp_num= $("input#name").val();
+
+                let data = {
+                    eval_num: eval_num,
+                    emp_num: emp_num,
+                    proj_code: proj_code,
+                    eval_hardwork: $("input#evalhw").val(),
+                    eval_friendly: $("input#evalfr").val(),
+                    eval_creative: $("input#evalcr").val(),
+                    eval_cmt: $("input#evalcmt").val()
+                }
+                console.log(data);
+                $.ajax({
+                    url: "/evaluation/editsubmit",
+                    data: data,
+                    type: "POST",
+                    success: function (result) {
+                        switch (result.status) {
+                            case StatusCode.Success:
+                                AppendAlert("Update successfully!", StatusAlert.Success);
+                                setTimeout(() => window.location.href = '/evaluation', 1500);
+                                break;
+                            default:
+                                AppendAlert("Error!", StatusAlert.Error);
+                                break;
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+}

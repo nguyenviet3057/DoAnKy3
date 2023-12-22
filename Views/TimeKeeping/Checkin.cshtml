@@ -18,7 +18,7 @@
                                 <a class="btn btn-primary" id="manage" href="/TimeKeeping">Manage</a>
                             </div>
                             <div class="card-action">
-                                <a class="btn btn-warning" id="checkin" role="button">Check-in</a>
+                                <a class="btn btn-danger" id="checkin" role="button">Check-in</a>
                             </div>
                         </div>
                     </div>
@@ -61,10 +61,12 @@
     <script src='/Content/assets/vendor/moment.min.js'></script>
     @*<script src='/Content/assets/js/plugins/calender.js'></script>*@
     <script>
+        var events;
         $(document).ready(function () {
-            let is_checked = false;
-            let events = [];
+            let is_checked = 0;
+            events = [];
             let today = new Date();
+            let time_code = null;
 
             $.ajax({
                 url: "/timekeeping/checkindata",
@@ -82,18 +84,42 @@
 
                             time_keeps.forEach(function (item, index) {
                                 let time_date = new Date(item.TIME_DATE);
-                                if (time_date.getDate() == today.getDate() && time_date.getMonth() == today.getMonth() && time_date.getFullYear() == today.getFullYear()) is_checked = true;
-                                let event = {
-                                    title: (item.TIME_ABST == 1) ? "Presented" : "Absent",
-                                    start: moment(item.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + item.TIME_CLK_IN + '.000Z',
-                                    textColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,1)" : "rgba(235,153,27,1)",
-                                    backgroundColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,0.2)" : "rgba(235,153,27,0.2)",
-                                    borderColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,1)" : "rgba(235,153,27,1)"
+                                let event = {};
+                                if (time_date.getDate() == today.getDate() && time_date.getMonth() == today.getMonth() && time_date.getFullYear() == today.getFullYear()) {
+                                    time_code = item.TIME_CODE;
+                                    if (item.TIME_CLK_IN != null) is_checked = 1;
+                                    if (item.TIME_CLK_OUT != null) is_checked = 2;
+                                    event = {
+                                        title: (is_checked == 1) ? "Checked-in" : "Checked-out",
+                                        start: moment(item.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + ((item.TIME_ABST == 1) ? item.TIME_CLK_IN : "09:00:00") + '.000Z',
+                                        textColor: (is_checked == 1) ? "rgba(235,153,27,1)" : "rgba(8,130,12,1)",
+                                        backgroundColor: (is_checked == 1) ? "rgba(235,153,27,0.2)" : "rgba(8,130,12,0.2)",
+                                        borderColor: (is_checked == 1) ? "rgba(235,153,27,1)" : "rgba(8,130,12,1)"
+                                    }
+                                } else {
+                                     event = {
+                                        title: (item.TIME_ABST == 1) ? "Presented" : "Absent",
+                                        start: moment(item.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + ((item.TIME_ABST == 1) ? item.TIME_CLK_IN : "09:00:00") + '.000Z',
+                                        textColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,1)" : "rgba(206,32,20,1)",
+                                        backgroundColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,0.2)" : "rgba(206,32,20,0.2)",
+                                        borderColor: (item.TIME_ABST == 1) ? "rgba(8,130,12,1)" : "rgba(206,32,20,1)"
+                                    }
                                 }
                                 events.push(event);
                             })
-
-                            if (is_checked) $("#checkin").removeClass("btn-warning").addClass("btn-success").text("Checked-in");
+                            if (is_checked == 0) {
+                                let event = {
+                                    title: "Not checked-in",
+                                    start: moment().format('YYYY-MM-DDTHH:mm:ss') + '.000Z',
+                                    textColor: "rgba(206,32,20,1)",
+                                    backgroundColor: "rgba(206,32,20,0.2)",
+                                    borderColor: "rgba(206,32,20,1)"
+                                }
+                                events.push(event);
+                            } else {
+                                if (is_checked == 1) $("#checkin").removeClass("btn-danger").addClass("btn-warning").text("Check-out").prop("id", "checkout");
+                                if (is_checked == 2) $("#checkin").removeClass("btn-danger").addClass("btn-success").text("Checked-out");
+                            }
 
                             console.log(events);
                             drawCalendar(events);
@@ -107,7 +133,7 @@
                 }
             })
 
-            $("#checkin").click(function () {
+            $(document).on("click", "#checkin", function () {
                 $.ajax({
                     url: "/timekeeping/checkinsubmit",
                     data: null,
@@ -116,20 +142,62 @@
                         let data = JSON.parse(result.data);
                         switch (result.status) {
                             case StatusCode.Success:
+                                time_code = data.TIME_CODE;
+                                console.log(time_code);
+                                events = events.filter(function (item) {
+                                    return item.title != "Not checked-in";
+                                })
                                 events.push({
-                                    title: "Presented",
+                                    title: "Checked-in",
+                                    start: moment(data.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + data.TIME_CLK_IN + '.000Z',
+                                    textColor: "rgba(235,153,27,1)",
+                                    backgroundColor: "rgba(235,153,27,0.2)",
+                                    borderColor: "rgba(235,153,27,1)"
+                                })
+
+                                $("#checkin").removeClass("btn-danger").addClass("btn-warning").text("Check-out").prop("id", "checkout");
+                                $("#calendar1 > div").remove();
+                                drawCalendar(events);
+                                AppendAlert("Check-in successfully!", StatusAlert.Success);
+                                break;
+                            default:
+                                AppendAlert("Check-in failed!", StatusAlert.Error);
+                                break;
+                        }
+                    }
+                })
+            })
+
+            $(document).on("click", "#checkout", function () {
+                let data = {
+                    time_code: time_code
+                }
+                $.ajax({
+                    url: "/timekeeping/checkoutsubmit",
+                    data: data,
+                    type: "POST",
+                    success: function (result) {
+                        let data = JSON.parse(result.data);
+                        switch (result.status) {
+                            case StatusCode.Success:
+                                events = events.filter(function (item) {
+                                    return item.title != "Checked-in";
+                                })
+                                events.push({
+                                    title: "Checked-out",
                                     start: moment(data.TIME_DATE, 'MM/DD/YYYY').format('YYYY-MM-DD') + "T" + data.TIME_CLK_IN + '.000Z',
                                     textColor: "rgba(8,130,12,1)",
                                     backgroundColor: "rgba(8,130,12,0.2)",
                                     borderColor: "rgba(8,130,12,1)"
                                 })
 
-                                $("#checkin").removeClass("btn-warning").addClass("btn-success").text("Checked-in");
+                                $("#checkout").removeClass("btn-warning").addClass("btn-success").text("Checked-out").prop("id", "checked");
+                                $("#calendar1 > div").remove();
                                 drawCalendar(events);
-                                AppendAlert("Check-in successfully!", StatusAlert.Success);
+                                AppendAlert("Check-out successfully!", StatusAlert.Success);
                                 break;
                             default:
-                                AppendAlert("Check-in failed!", StatusAlert.Error);
+                                AppendAlert("Check-out failed!", StatusAlert.Error);
                                 break;
                         }
                     }
@@ -152,7 +220,7 @@
                         header: {
                             left: "prev,next today",
                             center: "title",
-                            right: "dayGridMonth"
+                            right: ""
                         },
                         dateClick: function (info) {
                             $('#schedule-start-date').val(info.dateStr)

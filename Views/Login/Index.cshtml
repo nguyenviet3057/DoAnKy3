@@ -249,16 +249,16 @@
                     switch (result.status) {
                         case StatusCode.Success:
                             setCookie("access_token", JSON.parse(result.data).token, JSON.parse(result.data).expire);
-                            AppendAlert("Login successfully!");
+                            AppendAlert("Login successfully!", StatusAlert.Success);
                             setTimeout(() => window.location.pathname = "/home", 1500);
                             break;
                         case StatusCode.NotFound:
                             //alert("Account not found!");
-                            AppendAlert("Account not found!");
+                            AppendAlert("Account not found!", StatusAlert.Error);
                             break;
                         default:
                             //alert("Login failed!");
-                            AppendAlert("Login failed!");
+                            AppendAlert("Login failed!", StatusAlert.Error);
                             break;
                     }
                 },

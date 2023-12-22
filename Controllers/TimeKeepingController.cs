@@ -79,6 +79,7 @@ namespace DoAnKy3.Controllers
                     .Where(o => o.EMP_NUM == user.USER_ID)
                     .Select(o => new
                     {
+                        o.TIME_CODE,
                         TIME_DATE = o.TIME_DATE.Month + "/" + o.TIME_DATE.Day + "/" + o.TIME_DATE.Year,
                         o.TIME_CLK_IN,
                         o.TIME_CLK_OUT,
@@ -122,12 +123,60 @@ namespace DoAnKy3.Controllers
                 db.SubmitChanges();
 
                 dynamic data = new ExpandoObject();
+                data.TIME_CODE = time_keep.TIME_CODE;
                 data.TIME_DATE = time_keep.TIME_DATE.Month + "/" + time_keep.TIME_DATE.Day + "/" + time_keep.TIME_DATE.Year;
                 data.TIME_CLK_IN = time_keep.TIME_CLK_IN;
 
                 response.status = ResponseModel.StatusCode.Success;
                 response.data = JsonConvert.SerializeObject(data);
                 response.message = "Check-in successfully!";
+                return Json(response);
+            }
+            catch
+            {
+                response.status = ResponseModel.StatusCode.Error;
+                response.message = "Error";
+                return Json(response);
+            }
+        }
+        [HttpPost]
+        public ActionResult CheckoutSubmit()
+        {
+            USER user = ValidateUser();
+            if (user == null) return Json(StatusUnauthorized());
+
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                string time_code = Request.Form["time_code"];
+                var time_keep = db.TIME_KEEPs.FirstOrDefault(o => o.EMP_NUM == user.USER_ID && o.TIME_CODE.Equals(time_code));
+
+                if (time_keep == null)
+                {
+                    response.status = ResponseModel.StatusCode.NotFound;
+                    response.message = "Check in not found";
+                    return Json(response);
+                }
+
+                if (time_keep.TIME_CLK_OUT != null)
+                {
+                    response.status = ResponseModel.StatusCode.NotFound;
+                    response.message = "Checked-out";
+                    return Json(response);
+                }
+
+                var now = DateTime.Now;
+                time_keep.TIME_CLK_OUT = new TimeSpan(0, now.TimeOfDay.Hours, now.TimeOfDay.Minutes, now.TimeOfDay.Seconds);
+
+                db.SubmitChanges();
+
+                dynamic data = new ExpandoObject();
+                data.TIME_DATE = time_keep.TIME_DATE.Month + "/" + time_keep.TIME_DATE.Day + "/" + time_keep.TIME_DATE.Year;
+                data.TIME_CLK_IN = time_keep.TIME_CLK_IN;
+
+                response.status = ResponseModel.StatusCode.Success;
+                response.data = JsonConvert.SerializeObject(data);
+                response.message = "Check-out successfully!";
                 return Json(response);
             }
             catch
